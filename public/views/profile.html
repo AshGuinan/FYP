@@ -1,0 +1,23 @@
+<form action="/updateDetails" method="post">
+    <div class="form-group">
+        {{user}}
+    <input type="hidden" class="form-control" name="userName" value="{{user}}">
+</div>
+    <div class="form-group">
+        <label>Budget</label>
+        <input type="text" class="form-control" name="budget">
+    </div>
+    <div class="form-group">
+        <label>Num Children</label>
+        <input type="text" class="form-control" name="numChildren">
+    </div>
+    <div class="form-group">
+        <label>Age of Children</label>
+        <input type="text" class="form-control" name="ageChildren">
+    </div>
+    <div class="form-group">
+        <label>Activity Types</label>
+        <input type="text" class="form-control" name="activityType">
+    </div>
+    <button type="submit" class="btn btn-warning btn-lg">Login</button>
+</form>
