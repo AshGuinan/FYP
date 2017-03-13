@@ -10,6 +10,6 @@ var Rating = sequelize.define('Rating', {
 	user_id : {type : Sequelize.STRING, default: ''},
 });
 
-console.log("defined custom places");
+console.log("defined rating");
 
 module.exports = Rating;

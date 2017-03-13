@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    
+         <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        
+        <title>Starter Node and Angular</title>
+
+    <!-- CSS -->
+        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css"> <!-- custom styles -->
+        
+    </head>
+    <body ng-app="sampleApp" ng-controller="MainController">
+        <div class="container">
+            
+            <!-- HEADER -->
+            <nav class="navbar navbar-inverse">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">{{user}}</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/places">Places</a></li>
+                    <li><a href="/user">Users</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+
+            <!-- ANGULAR DYNAMIC CONTENT -->
+            <div ng-view></div>
+            <!-- <div id="map"></div> -->
+            <!--<a>Zoo</a>-->
+<!--             <input type="number" ng-model="radius"/>
+ -->            <!-- {{radius}}
+            <p id="clearMarkers">Clear Markers</p> -->
+            <div class="app">
+        
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        </div>
+
+        <!-- JS -->
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script> -->
+        <link rel="stylesheet" href="../node_modules/angular/angular.min.js">
+        <link rel="stylesheet" href="../node_modules/angular-route/angular-route.min.js">
+        <link rel="stylesheet" href="../node_modules/jquery/dist/jquery.min.js">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPPzjXf9bFp5KrONcTaFq0SMBAu884lCo&libraries=places"></script>
+        <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+
+        <!-- ANGULAR CUSTOM -->
+        <script src="js/controllers/MainCtrl.js"></script>
+        <script src="js/controllers/PlaceCtrl.js"></script>
+        <script src="js/services/UserService.js"></script>
+        <script src="js/controllers/UserCtrl.js"></script>
+        <script src="js/services/PlaceService.js"></script>
+        <script src="js/appRoutes.js"></script>
+        <script src="js/app.js"></script>
+
+        </body>
+
+</html>

@@ -1,11 +1,11 @@
 module.exports = function(app, passport) {
     var User = require('./models/User');
+    var Place = require('./models/Place');
+
 	// server routes ===========================================================
 	// handle things like api calls
 	// authentication routes
 	app.all("*", function(req,res,next){
-		console.log("New Request:");
-		console.log(req.body);
 		next()
 	});
 	// frontend routes =========================================================
@@ -45,6 +45,11 @@ module.exports = function(app, passport) {
         // res.sendfile('./public/views/user.html');
     });
 
+    app.get('/frontPage', frontPage, function(req, res) {
+        console.log('Front page loading');
+        // res.sendfile('./public/views/user.html');
+    });
+
 	console.log("routes are setup");
 
     app.get('/me', isLoggedIn, function(req, res) {
@@ -54,26 +59,66 @@ module.exports = function(app, passport) {
         res.send(data);
     });
 
-    app.post('/updateDetails',
-        function(req, res){
-            // console.log(req.body.userName);
-            //console.log(req.userName.userName);
-            User.find({ where: { userName: req.body.userName } })
-                .on('success', function () {
-                    if (User) {
-                        User.updateAttributes({
-                            budget: req.body.budget,
-                            numChildren: req.body.numChildren,
-                            ageChildren: req.body.ageChildren,
-                            activityType: req.body.activityType
-                        })
-                            .success(function () {
-                                console.log('Tah-Dah');
-                                res.redirect('/');
-                            })
+    app.get('/fetchPlaces', isLoggedIn, function(req, res) {
+        console.log("fetch places where user is", req.user.userName);
+        Place.findAll({ 
+            where: { 
+                user: req.user.userName
                     }
-                })
+            })
+        .then(function(data){
+            res.send(data);
         });
+    });
+
+    app.post('/updateDetails', function(req, res){
+        User.find({ where: { userName: req.body.userName } })
+        .on('success', function () {
+            if (User) {
+                User.updateAttributes({
+                    budget: req.body.budget,
+                     numChildren: req.body.numChildren,
+                     ageChildren: req.body.ageChildren,
+                    activityType: req.body.activityType
+                })
+                .success(function () {
+                        console.log('Tah-Dah');
+                        res.redirect('/');
+                })
+            }
+        })
+    });
+
+    app.post('/addPlace', isLoggedIn, function(req, res){
+        var name = req.body.name.toLowerCase();
+        var lat1 = parseFloat(req.body.lat);
+        var long1 = parseFloat(req.body.long);
+        console.log('add Place called!');
+        Place.find({where:{ 'name' :  name }}).then(function(place){
+            if (place != null) {
+                console.log('{Place already exists}');
+                res.send(place);
+            } else {
+                data = {
+                    name: name,
+                    address: req.body.address,
+                    lat: lat1,
+                    long: long1,
+                    type: req.body.type,
+                    verified: req.body.verified,
+                    user: req.body.user,
+                    price_level: req.body.price_level
+                }
+                console.log("no existing place with this name found, creating a new place with data:")
+                console.log(data);
+                Place.create(data).then(function(place){
+                    console.log("created a new place!", place);
+                    res.send(place);
+                });
+            }
+        });
+    });
+
 
     function isLoggedIn(req, res, next) {
 
@@ -94,6 +139,19 @@ module.exports = function(app, passport) {
         if (req.isAuthenticated()){
             console.log('Logged in - edit your profile!');
             res.sendfile('./public/views/profile.html');
+
+        } else{
+            console.log('Sign in!');
+            res.sendfile('./public/views/user.html');
+        }
+    }
+
+    function frontPage(req, res, next) {
+
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated()){
+            console.log('Logged in - Hello!');
+            return next();
 
         } else{
             console.log('Sign in!');

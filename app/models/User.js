@@ -54,5 +54,6 @@ var User = sequelize.define('User', {
     }
 });
 console.log("defined the user");
-
+// ensure the table exists
+sequelize.sync()
 module.exports = User;
