@@ -1,6 +1,7 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, raccoon) {
     var User = require('./models/User');
     var Place = require('./models/Place');
+    //var raccoon = require('raccoon');
 
 	// server routes ===========================================================
 	// handle things like api calls
@@ -42,12 +43,26 @@ module.exports = function(app, passport) {
 
     app.get('/user', userPage, function(req, res) {
         console.log('User page loading');
-        // res.sendfile('./public/views/user.html');
     });
 
     app.get('/frontPage', frontPage, function(req, res) {
         console.log('Front page loading');
-        // res.sendfile('./public/views/user.html');
+    });
+
+    app.post('/upvote', isLoggedIn, function(req, res) {
+        raccoon.liked(req.user.userName , req.body.place).then(() => {
+            console.log('UPvote confirmed!');
+            res.send(200);
+            raccoon.bestRated().then(console.log);
+        });
+    });
+
+    app.post('/downvote', isLoggedIn, function(req, res) {
+        raccoon.disliked(req.user.userName, req.body.place).then(() => {
+            console.log('Nopey-Nope Face!');
+            res.send(200);
+            raccoon.bestRated().then(console.log);
+        });
     });
 
 	console.log("routes are setup");
@@ -63,30 +78,47 @@ module.exports = function(app, passport) {
         console.log("fetch places where user is", req.user.userName);
         Place.findAll({ 
             where: { 
-                user: req.user.userName
-                    }
-            })
+                //user: req.user.userName
+                $or: [{user: req.user.userName}, {verified: true}]
+            }
+        })
         .then(function(data){
             res.send(data);
         });
     });
 
-    app.post('/updateDetails', function(req, res){
-        User.find({ where: { userName: req.body.userName } })
-        .on('success', function () {
-            if (User) {
-                User.updateAttributes({
-                    budget: req.body.budget,
-                     numChildren: req.body.numChildren,
-                     ageChildren: req.body.ageChildren,
-                    activityType: req.body.activityType
-                })
-                .success(function () {
-                        console.log('Tah-Dah');
-                        res.redirect('/');
+    app.get('/fetchAllPlaces', isLoggedIn, function(req, res) {
+        console.log(req.user);
+        console.log(req);
+        Place.findAll().then(function(data){
+            res.send(data);
+        });
+    });
+
+    app.post('/updateDetails', isLoggedIn, function(req, res){
+        console.log('updateDetails')
+        console.log(req.body)
+        console.log(req.user.userName,req.user.id)
+        req.user.updateAttributes({
+            budget: req.body.budget,
+            numChildren: req.body.numChildren,
+            ageChildren: req.body.ageChildren,
+            activityType: req.body.activityType
+        }).then(function () {
+            console.log('Tah-Dah');
+            res.redirect('/');
+        })
+    });
+
+    app.post('/verify', isLoggedIn, function(req, res){
+        Place.find({ where: { id: req.body.placeId } }).then(function (place) {
+            if (place) {
+                console.log('Hello');
+                place.updateAttributes({
+                    verified: true,
                 })
             }
-        })
+        });
     });
 
     app.post('/addPlace', isLoggedIn, function(req, res){
@@ -105,7 +137,7 @@ module.exports = function(app, passport) {
                     lat: lat1,
                     long: long1,
                     type: req.body.type,
-                    verified: req.body.verified,
+                    verified: false,
                     user: req.body.user,
                     price_level: req.body.price_level
                 }
@@ -151,7 +183,7 @@ module.exports = function(app, passport) {
         // if user is authenticated in the session, carry on
         if (req.isAuthenticated()){
             console.log('Logged in - Hello!');
-            return next();
+            res.sendfile('./public/views/home.html');
 
         } else{
             console.log('Sign in!');

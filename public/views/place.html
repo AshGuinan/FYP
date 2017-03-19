@@ -1,3 +1,17 @@
 <div class="jumbotron text-center">
-	<h1>A list of our favorite places</h1>
+	<div id="map"></div>
+	<!--<a>Zoo</a>-->
+	<input type="number" ng-model="radius"/>
+	{{radius}}
+	<p id="clearMarkers">Clear Markers</p>
+	
+	<div ng-repeat="place in allPlaces track by $index">
+	  {{place.name}},
+	  {{place.address}},
+	  {{place.type}},
+	  {{place.user}},
+	  {{place.verified}}
+	  <button ng-click="verify(place.id)">Verify Me! </button> 
+	</div>
+
 </div>
