@@ -17,12 +17,13 @@ var User = sequelize.define('User', {
         type: DataTypes.STRING
     },
     verified: {
-        type: DataTypes.STRING
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     budget: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "fuck"
+        defaultValue: "low"
     },
     numChildren: {
         type: DataTypes.STRING,
@@ -32,12 +33,17 @@ var User = sequelize.define('User', {
     ageChildren: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: 5
+        defaultValue: 0
     },
     activityType: {
         type: DataTypes.STRING,
         allowNull: true,
         defaultValue: "fun"
+    },
+    location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "Galway"
     }
 },{
     setterMethods: {

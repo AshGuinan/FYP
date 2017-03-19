@@ -23,53 +23,52 @@ module.exports = function(app, passport, raccoon) {
 		function(req, res) {
 			res.redirect('/');
             console.log('User: '+req.user.userName);
-		});
+		});   
 
-    app.get('/logout',
+    app.get('/api/logout',
         function(req, res){
-            console.log('is user authenticated? ' + req.isAuthenticated());
-            console.log('cookies ' + JSON.stringify(req.cookies));
-            req.logout();
-            res.clearCookie('connect.sid', {expires: new Date(0)});
-            console.log('Logging out');
-            res.sendfile('./public/views/logout.html');
-            console.log('is user authenticated? ' + req.isAuthenticated());
+            console.log('\n\n\n\nAbout to log out');
+            req.logOut();
+
+            res.clearCookie('connect.sid', {expires: new Date()});
+            req.session.destroy(function (err) {
+                console.log('logged out');
+                res.send(200);
+            });
         });
 
-	app.get('/places', isLoggedIn, function(req, res) {
-        console.log('You are now logged in!');
+    app.get('/api/places', isLoggedIn, function(req, res) {
         res.sendfile('./public/views/place.html');
 	});
 
-    app.get('/user', userPage, function(req, res) {
+    app.get('/api/user', userPage, function(req, res) {
         console.log('User page loading');
     });
 
-    app.get('/frontPage', frontPage, function(req, res) {
+    app.get('/api/frontPage', frontPage, function(req, res) {
         console.log('Front page loading');
     });
 
+    //TODO: Lock down voting, unlike, undislike
+
     app.post('/upvote', isLoggedIn, function(req, res) {
-        raccoon.liked(req.user.userName , req.body.place).then(() => {
+        raccoon.liked(req.user.userName, req.body.place).then(() => {
             console.log('UPvote confirmed!');
             res.send(200);
-            raccoon.bestRated().then(console.log);
         });
     });
 
     app.post('/downvote', isLoggedIn, function(req, res) {
         raccoon.disliked(req.user.userName, req.body.place).then(() => {
-            console.log('Nopey-Nope Face!');
+            console.log('Downvoted...');
             res.send(200);
-            raccoon.bestRated().then(console.log);
         });
     });
 
-	console.log("routes are setup");
-
     app.get('/me', isLoggedIn, function(req, res) {
         var data = {
-            name: req.user.userName
+            name: req.user.userName,
+            verified: req.user.verified
         };
         res.send(data);
     });
@@ -88,12 +87,28 @@ module.exports = function(app, passport, raccoon) {
     });
 
     app.get('/fetchAllPlaces', isLoggedIn, function(req, res) {
-        console.log(req.user);
-        console.log(req);
         Place.findAll().then(function(data){
             res.send(data);
         });
     });
+
+    app.get('/recommendations', isLoggedIn, function(req, res) {
+        console.log(req.user.userName);
+        raccoon.recommendFor(req.user.userName, 5).then((results) => {
+           Place.findAll({ where: { id: results } }).then(function (place) {
+                    res.send(place);
+                });
+        });
+    });
+
+    app.get('/top', isLoggedIn, function(req, res) {
+            var topPlaces = [];
+            raccoon.bestRated().then((results) => {
+                Place.findAll({ where: { id: results } }).then(function (place) {
+                    res.send(place);
+                });
+            });
+        });
 
     app.post('/updateDetails', isLoggedIn, function(req, res){
         console.log('updateDetails')
@@ -103,17 +118,17 @@ module.exports = function(app, passport, raccoon) {
             budget: req.body.budget,
             numChildren: req.body.numChildren,
             ageChildren: req.body.ageChildren,
-            activityType: req.body.activityType
+            activityType: req.body.activityType,
+            location: req.body.location
         }).then(function () {
-            console.log('Tah-Dah');
             res.redirect('/');
         })
     });
 
-    app.post('/verify', isLoggedIn, function(req, res){
+    app.post('/verify', isAdmin, function(req, res){
         Place.find({ where: { id: req.body.placeId } }).then(function (place) {
             if (place) {
-                console.log('Hello');
+                console.log('place has been verified');
                 place.updateAttributes({
                     verified: true,
                 })
@@ -122,13 +137,12 @@ module.exports = function(app, passport, raccoon) {
     });
 
     app.post('/addPlace', isLoggedIn, function(req, res){
+        console.log(req);
         var name = req.body.name.toLowerCase();
         var lat1 = parseFloat(req.body.lat);
         var long1 = parseFloat(req.body.long);
-        console.log('add Place called!');
         Place.find({where:{ 'name' :  name }}).then(function(place){
             if (place != null) {
-                console.log('{Place already exists}');
                 res.send(place);
             } else {
                 data = {
@@ -138,13 +152,12 @@ module.exports = function(app, passport, raccoon) {
                     long: long1,
                     type: req.body.type,
                     verified: false,
-                    user: req.body.user,
+                    user: req.user.userName,
                     price_level: req.body.price_level
                 }
-                console.log("no existing place with this name found, creating a new place with data:")
                 console.log(data);
                 Place.create(data).then(function(place){
-                    console.log("created a new place!", place);
+                    console.log("created a new place!");
                     res.send(place);
                 });
             }
@@ -153,15 +166,28 @@ module.exports = function(app, passport, raccoon) {
 
 
     function isLoggedIn(req, res, next) {
-
         // if user is authenticated in the session, carry on
         if (req.isAuthenticated()){
+            console.log("\n logged in !!!")
+            return next();
+        }
+        else {
+            // if they aren't redirect them to the home page
+            res.sendfile('./public/views/fail.html');
+            console.log('not logged in');
+        }
+    }
+
+    function isAdmin(req, res, next) {
+        // if user is authenticated in the session, carry on
+        if (req.user.verified==true){
+            console.log('Welcome admin!');
             return next();
         }
 
         // if they aren't redirect them to the home page
         res.sendfile('./public/views/fail.html');
-        console.log('are you logged in?');
+        console.log('Nope, Access Denied');
     }
 
     //For profile page
@@ -179,7 +205,6 @@ module.exports = function(app, passport, raccoon) {
     }
 
     function frontPage(req, res, next) {
-
         // if user is authenticated in the session, carry on
         if (req.isAuthenticated()){
             console.log('Logged in - Hello!');

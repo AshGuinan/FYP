@@ -3,29 +3,21 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 	$routeProvider
 		// home page
 		.when('/', {
-			templateUrl: 'frontPage',
+			templateUrl: 'api/frontPage',
 			controller: 'MainController'
 		})
-
 		.when('/user', {
-			templateUrl: 'user',
+			templateUrl: 'api/user',
 			controller: 'UserController'
 		})
-
 		.when('/fail', {
 			templateUrl: 'views/fail.html',
 			controller: 'UserController'
 		})
-
 		.when('/places', {
-			templateUrl: 'places',
+			templateUrl: 'api/places',
 			controller: 'PlaceController'
-		})
-
-	.when('/logout', {
-		templateUrl: 'logout',
-		controller: 'MainController'
-	});
+		});
 
 	$locationProvider.html5Mode(true);
 

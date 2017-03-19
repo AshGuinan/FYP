@@ -21,9 +21,10 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 			console.log("success getting user from /me endpoint", success);
             if(success.data.name!==""){
                 $rootScope.user = success.data.name;
-                //$scope.newPlace.user = success.data.name;
+                $scope.isAdmin = success.data.verified;
             }
 			console.log($rootScope.user);
+			console.log($scope.isAdmin);
 			console.log("Success: "+success);
 		},function (error){
 			console.log("error: " + error);
@@ -43,6 +44,12 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 			console.log('upvoted!');
 		})
 	}
+	$scope.logout = function(){
+		$http.get('/api/logout').then(function(success){
+			// refreshing will bring the user to the login page
+			location.href="/"
+		});
+	}
 
 	$scope.downvote = function(place){
 		console.log('Downvote place', place);
@@ -51,34 +58,22 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 		})
 	}
 
-	$scope.addPlace = function(){
-		console.log('submiting new place')
-		console.log($scope.newPlace)
-		// reset $scope.newPlace after success
-		$http.post('/addPlace', $scope.newPlace).then(function(success){
-			console.log('success', success)
-			createMarkerFromCustomPlace(success.data);
-			// reset form
-			$scope.newPlace.name = '';
-			$scope.newPlace.type = '';
-			$scope.newPlace.address = '';
-			nPData.close();
-			//$scope.newUnsavedPlace.setMap(null);
-			$scope.newUnsavedPlace = null;
-		},function(error){
-			console.log('error', error)
-		});
-	}
+	
 
 	$scope.verify = function(id){
 		console.log(id);
-		var data = {placeId:id};
-		console.log('Hai thar');
-		$http.post('/verify', data).then(function (data){
+		if($scope.isAdmin){
+			var data = {placeId:id};
+			console.log('Hai thar');
+			$http.post('/verify', data).then(function (data){
 				console.log('verifying...');
 			},function (error){
 				console.log(error);
 			});
+		} else {
+			console.log('Nice try pal');
+		}
+		
 	}
 
 	$scope.content = null;

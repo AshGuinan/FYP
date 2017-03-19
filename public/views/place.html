@@ -4,14 +4,49 @@
 	<input type="number" ng-model="radius"/>
 	{{radius}}
 	<p id="clearMarkers">Clear Markers</p>
-	
-	<div ng-repeat="place in allPlaces track by $index">
-	  {{place.name}},
-	  {{place.address}},
-	  {{place.type}},
-	  {{place.user}},
-	  {{place.verified}}
-	  <button ng-click="verify(place.id)">Verify Me! </button> 
+    <button ng-click="search('education')">Education</button>
+    <button ng-click="search('outdoors')">Outdoors</button>
+    <button ng-click="search('indoorFun')">Indoor</button>
+    <button ng-click="search('food')">Food and Drink</button>
+    <button ng-click="search('culture')">Culture</button>
+    <button ng-click="search('goodToKnow')">Good to Know</button>
+    <button ng-click="search('ICE')">ICE</button>
+
+    <button ng-click="recommend()">Recommend Me!</button>
+    <div></div>
+	<div ng-if="isAdmin">
+		<div ng-repeat="place in allPlaces track by $index">
+		  {{place.name}},
+		  {{place.address}},
+		  {{place.type}},
+		  {{place.user}},
+		  {{place.verified}}
+		  <button ng-click="verify(place.id)">Verify Me! </button> 
+		</div>
 	</div>
 
+</div>
+<div id="newData" hidden="true">
+	<form ng-submit="addPlace()">
+      <div class="form-group">
+	        <label>Name</label>
+	        <input type="text" class="form-control" name="name" ng-model="newPlace.name">
+    	</div>
+    	<div class="form-group">
+        	<label>Address</label>
+        	<input type="text" class="form-control" name="address" ng-model="newPlace.address">
+   		</div>
+   		<div class="form-group">
+        	<label>Type</label>
+            <select ng-model="newPlace.type" ng-options="o as o for o in allTypes">
+                
+            </select>
+        	<!-- <input type="text" class="form-control" name="type" ng-model="newPlace.type"> -->
+    	</div>
+    	<div class="form-group">
+        	<label>Price</label>
+        	<input type="text" class="form-control" name="type" ng-model="newPlace.price_level">
+    	</div>
+		<button type="submit" class="btn btn-warning btn-lg">Add!</button>
+    </form>
 </div>

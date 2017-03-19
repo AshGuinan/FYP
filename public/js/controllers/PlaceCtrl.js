@@ -1,4 +1,4 @@
-angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http', function($scope, $http) {
+angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http', '$compile', function($scope, $http, $compile) {
 	var map;
 	var markers = [];
 	var newPlace;
@@ -20,9 +20,24 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 		long: 0,
 		user: null
 	}
-	console.log('Place Controller activated');
-
-//TODO: Choose location! Popular/List
+	$scope.education = ['aquarium', 'book_store','museum'];
+	$scope.indoorFun = ['bowling_alley','movie_theatre'];
+	$scope.food = ['bakery', 'cafe','restaurant'];
+	$scope.outdoors = ['amusement_park', 'park','zoo'];
+	$scope.culture = ['art_gallery', 'library'];
+	$scope.goodToKnow = ['ATM', 'Bank','Gas_Station', 'taxi_stand', 'train_station', 'transit_station', 'post_office', 'pharmacy'];
+	$scope.ICE = ['police', 'hospital', 'doctor', 'dentist', 'embassy', 'car_repair'];
+	$scope.allTypes =  $scope.education.concat( 
+			$scope.indoorFun.concat(
+				$scope.food.concat(
+					$scope.outdoors.concat(
+						$scope.culture.concat( 
+							$scope.goodToKnow.concat($scope.ICE)
+						)
+					)
+				)
+			)
+		).sort(); 
 
 	function initMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
@@ -51,19 +66,53 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 		});
 	}	
 
-	$scope.search = function(){
-		service.nearbySearch({
-			location: map.getCenter(),
-			radius: $scope.radius,
-			type: ['cafe']
-		}, callback);
+	$scope.search = function(input){
+		var sType = $scope[input];
+		console.log('searching for '+ input);
+		console.log(sType)
+		for(var x=0; x<sType.length; x++){
+			type = sType[x]
+			service.nearbySearch({
+				location: map.getCenter(),
+				radius: $scope.radius,
+				type: [type]
+			}, callback.bind(input));
+		}
 	};
 
+	$scope.addPlace = function(){
+		console.log('submiting new place');
+		console.log($scope.newPlace);
+		// reset $scope.newPlace after success
+		$http.post('/addPlace', $scope.newPlace).then(function(success){
+			console.log('success', success)
+			createMarkerFromCustomPlace(success.data);
+			// reset form
+			$scope.newPlace.name = '';
+			$scope.newPlace.type = '';
+			$scope.newPlace.address = '';
+			nPData.close();
+			//$scope.newUnsavedPlace.setMap(null);
+			$scope.newUnsavedPlace = null;
+		},function(error){
+			console.log('error', error)
+		});
+	}
+	
+	$scope.recommend = function(){
+		$http.get('/recommendations').then(function(success){
+			console.log(success);
+			$scope.recs = success;
+		});
+	}
+
 	function callback(results, status, pagination) {
+		var type = this.toString();
+		console.log("trggering callback for place of type: ",type);
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
 			for (var i = 0; i < results.length; i++) {
 				createMarker(results[i]);
-				// console.log(results[i]);
+				//console.log(results[i]);
 			}
 		}
 		if (pagination.hasNextPage) {
@@ -84,15 +133,17 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 		if(place.price_level == undefined){
 			place.price_level = " No Rating Available"
 		}
+		var type = (place.types[0]).replace("_"," ");
 		google.maps.event.addListener(marker, 'click', function() {
 			content = 
 				'<div>'+
 					'<h3>' + place.name + '</h3>'+ 
+					'<p> Type: ' +  type + '</p>' +
 					'<p> This Address: ' +  place.vicinity + '</p>' +
-					'<p> Rating:' + place.rating + '</p>' +
+					'<p> Google Rating:' + place.rating + '</p>' +
 					'<p> Price Level' + place.price_level + '</p>' + 
-					'<a ng-click=upvote("' + place.id + '")> Likes </a>' +
-					'<a ng-click=downvote("' + place.id + '")> Dislikes </a>' +
+					'<a ng-click=upvote("' + place.id + '")> I liked it! </a>' +
+					'<a ng-click=downvote("' + place.id + '")> Not for me...  </a>' +
 				'</div>';
 
 			infowindow.setContent( $compile(content)($scope)[0] )
@@ -102,13 +153,20 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 
 	function createMarkerFromCustomPlace(customPlace){
 		console.log("adding custom place:", customPlace)
-		createMarker({
-			id: customPlace.id,
-			name: customPlace.name,
-			vicinity: customPlace.address,
-			geometry: {
-				location: new google.maps.LatLng(customPlace.lat, customPlace.long)
-		}});
+		var loc = new google.maps.LatLng(customPlace.lat, customPlace.long);
+		var dist = google.maps.geometry.spherical.computeDistanceBetween(galway,loc);
+		console.log(dist);
+		if (dist<=$scope.radius){
+			createMarker({
+				id: customPlace.id,
+				types: [customPlace.type],
+				name: customPlace.name,
+				vicinity: customPlace.address,
+				geometry: {
+					location: loc
+				}
+			});	
+		}	
 	}
 
 $http.get('/fetchPlaces')
@@ -127,4 +185,5 @@ $http.get('/fetchPlaces')
 //Do the things!
 	initMap();
 	// map.addListener("bounds_changed",$scope.search,false);
+
 }]);

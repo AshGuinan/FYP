@@ -8,15 +8,12 @@ module.exports = function(passport){
     console.log("passport config loaded");
 
     passport.serializeUser(function(user, cb) {
-        console.log("serializeUser", user.id);
         cb(null, user.id);
     });
 
     passport.deserializeUser(function(id, cb) {
-        console.log("deserializeUser", id);
+        console.log("deserializeUser by id:", id);
         User.findById(id).then(function (user) {
-            // if (err) { return cb(err); }
-            console.log("deserializeUser Found");
             cb(null, user);
         });
     });
