@@ -5,7 +5,7 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 	var nPData = new google.maps.InfoWindow();
 	var service;
 	var galway = new google.maps.LatLng(53.272931, -9.0631102);
-	
+	window.text = $scope
 	$scope.radius = 1000;
 	$scope.markers =[];
 	$scope.newUnsavedPlace = null;
@@ -100,9 +100,49 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 	}
 	
 	$scope.recommend = function(){
-		$http.get('/recommendations').then(function(success){
-			console.log(success);
-			$scope.recs = success;
+		$http.get('/recommendations').then(function(response){
+			console.log(response);
+			var places = response.data.localplaces; 
+			var recommendations = response.data.recommendations; 
+			$scope.recs = {};
+			if (places && places.length > 0){
+	            for(i=0;i<places.length;i++){
+					createMarkerFromCustomPlace(places[i]);
+				}
+			}
+			for(i=0;i<recommendations.length;i++){
+				var id = recommendations[i];
+				$scope.recs[id] = null
+				if(id.length > 6){
+					// google id
+			        service.getDetails({placeId: id}, function(place, status) {
+			          if (status === google.maps.places.PlacesServiceStatus.OK) {
+			            createMarker(place);
+			            console.log('created marker for ', id, place.place_id )
+			            console.log('which points to ', $scope.recs[place.place_id] )
+			            $scope.recs[place.place_id] = place;
+			            $scope.$apply();
+			          }
+			        });
+					console.log(id + " is a google id, need to fetch place data");
+				} else {
+					// custom place id
+					console.log(id + " is a local id, need to fetch place data");
+					var place = null
+		            for(i=0;i<places.length;i++){
+		            	if(places[i].id == id){
+			            	place = places[i];
+			            	break;
+		            	}
+		            }
+					$scope.recs[place.id] = {
+						place_id: place.id,
+						types: [place.type],
+						name: place.name,
+						vicinity: place.address,
+					}	
+				}
+			}
 		});
 	}
 
@@ -126,6 +166,7 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 			map: map,
 			position: place.geometry.location
 		});
+		marker.place = place;
 		markers.push(marker);
 		if(place.rating == undefined){
 			place.rating = " No Rating Available"
@@ -134,6 +175,7 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 			place.price_level = " No Rating Available"
 		}
 		var type = (place.types[0]).replace("_"," ");
+		console.log(place)
 		google.maps.event.addListener(marker, 'click', function() {
 			content = 
 				'<div>'+
@@ -141,9 +183,10 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 					'<p> Type: ' +  type + '</p>' +
 					'<p> This Address: ' +  place.vicinity + '</p>' +
 					'<p> Google Rating:' + place.rating + '</p>' +
+					'<p> Beacon Rating:' + place.beaconRating + '</p>' +
 					'<p> Price Level' + place.price_level + '</p>' + 
-					'<a ng-click=upvote("' + place.id + '")> I liked it! </a>' +
-					'<a ng-click=downvote("' + place.id + '")> Not for me...  </a>' +
+					'<a ng-click=upvote("' + place.place_id + '")> I liked it! </a>' +
+					'<a ng-click=downvote("' + place.place_id + '")> Not for me...  </a>' +
 				'</div>';
 
 			infowindow.setContent( $compile(content)($scope)[0] )
@@ -158,8 +201,10 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 		console.log(dist);
 		if (dist<=$scope.radius){
 			createMarker({
-				id: customPlace.id,
+				custom: true,
+				place_id: customPlace.id,
 				types: [customPlace.type],
+				beaconRating: customPlace.beaconRating,
 				name: customPlace.name,
 				vicinity: customPlace.address,
 				geometry: {

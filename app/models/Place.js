@@ -8,6 +8,7 @@ var Place = sequelize.define('Place', {
 	address : {type : Sequelize.STRING, default: ''},
 	lat : {type : Sequelize.DECIMAL(20,15)},
 	long : {type : Sequelize.DECIMAL(20,15)},
+	beaconRating : {type : Sequelize.DECIMAL(), default: 0},
 	verified : {type : Sequelize.BOOLEAN, default: false},
 	type : {type : Sequelize.STRING, default: ''},
 	user : {type : Sequelize.STRING, default: ''},

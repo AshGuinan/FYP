@@ -19,9 +19,11 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 	$http.get('/me')
 		.then(function (success){
 			console.log("success getting user from /me endpoint", success);
-            if(success.data.name!==""){
-                $rootScope.user = success.data.name;
+            if(success.data.userName!==""){
+                $rootScope.user = success.data.userName;
                 $scope.isAdmin = success.data.verified;
+                $scope.currentUser = success.data;
+                console.log($scope.currentUser);
             }
 			console.log($rootScope.user);
 			console.log($scope.isAdmin);

@@ -54,23 +54,31 @@ module.exports = function(app, passport, raccoon) {
     app.post('/upvote', isLoggedIn, function(req, res) {
         raccoon.liked(req.user.userName, req.body.place).then(() => {
             console.log('UPvote confirmed!');
-            res.send(200);
+            Place.findById(req.body.place).then(function(place){
+                console.log("The place had id " + req.body.place + " and we found " + place.name)
+                place.increment({beaconRating: 1}).then(function(){
+                    console.log('incremented places rating in db')
+                    res.send(200);
+                });
+            });
         });
     });
 
     app.post('/downvote', isLoggedIn, function(req, res) {
         raccoon.disliked(req.user.userName, req.body.place).then(() => {
             console.log('Downvoted...');
-            res.send(200);
+            Place.findById(req.body.place).then(function(place){
+                console.log("The place had id " + req.body.place + " and we found " + place.name)
+                place.decrement({beaconRating: 1}).then(function(){
+                    console.log('decremented places rating in db')
+                    res.send(200);
+                });
+            });
         });
     });
 
     app.get('/me', isLoggedIn, function(req, res) {
-        var data = {
-            name: req.user.userName,
-            verified: req.user.verified
-        };
-        res.send(data);
+        res.send(req.user);
     });
 
     app.get('/fetchPlaces', isLoggedIn, function(req, res) {
@@ -95,9 +103,19 @@ module.exports = function(app, passport, raccoon) {
     app.get('/recommendations', isLoggedIn, function(req, res) {
         console.log(req.user.userName);
         raccoon.recommendFor(req.user.userName, 5).then((results) => {
-           Place.findAll({ where: { id: results } }).then(function (place) {
-                    res.send(place);
-                });
+            console.log('results: ');
+            console.log(results);
+            console.log('username: ');
+            console.log(req.user.userName);
+           Place.findAll({ where: { id: results } }).then(function (places) {
+                var response = {
+                    recommendations:results,
+                    localplaces:places
+                };
+                console.log('results: ');
+                console.log(places);
+                res.send(response);
+            });
         });
     });
 
@@ -114,11 +132,23 @@ module.exports = function(app, passport, raccoon) {
         console.log('updateDetails')
         console.log(req.body)
         console.log(req.user.userName,req.user.id)
+        //only update 
+        updatedUserData = {
+
+        }
         req.user.updateAttributes({
             budget: req.body.budget,
             numChildren: req.body.numChildren,
             ageChildren: req.body.ageChildren,
             activityType: req.body.activityType,
+            location: req.body.location 
+        }).then(function () {
+            res.redirect('/');
+        })
+    });
+
+    app.post('/updateLoc', isLoggedIn, function(req, res){
+        req.user.updateAttributes({
             location: req.body.location
         }).then(function () {
             res.redirect('/');
@@ -152,6 +182,7 @@ module.exports = function(app, passport, raccoon) {
                     long: long1,
                     type: req.body.type,
                     verified: false,
+                    beaconRating: 0,
                     user: req.user.userName,
                     price_level: req.body.price_level
                 }

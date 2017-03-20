@@ -13,7 +13,22 @@
     <button ng-click="search('ICE')">ICE</button>
 
     <button ng-click="recommend()">Recommend Me!</button>
-    <div></div>
+    <div ng-repeat="(id,place) in recs track by $index">
+        <div class="card" >
+            <h3>
+                {{place.name}}
+            </h3>
+            <p>
+                Type: {{place.types[0]}}
+            </p>
+            <p>
+                Google Rating: {{place.rating}}
+            </p>
+            <p>
+                Price Level: {{place.price_level}}
+            </p>
+        </div>
+    </div>
 	<div ng-if="isAdmin">
 		<div ng-repeat="place in allPlaces track by $index">
 		  {{place.name}},

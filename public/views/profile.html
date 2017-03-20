@@ -1,33 +1,26 @@
 <form action="/updateDetails" method="post">
     <div class="form-group">
-        {{user}}
-    <input type="hidden" class="form-control" name="userName" value="{{user}}">
-</div>
+        {{currentUser.userName}}
+        <input type="hidden" class="form-control" name="userName" value="{{currentUser.userName}}">
+    </div>
+    <div class="form-group">
+        <input type="hidden" class="form-control" name="location" value="{{currentUser.location}}">
+    </div>
     <div class="form-group">
         <label>Budget</label>
-        <input type="text" class="form-control" name="budget">
+        <input type="text" class="form-control" name="budget" value="{{currentUser.budget}}">
     </div>
     <div class="form-group">
         <label>Num Children</label>
-        <input type="text" class="form-control" name="numChildren">
+        <input type="text" class="form-control" name="numChildren" value="{{currentUser.numChildren}}">
     </div>
     <div class="form-group">
         <label>Age of Children</label>
-        <input type="text" class="form-control" name="ageChildren">
+        <input type="text" class="form-control" name="ageChildren" value="{{currentUser.ageChildren}}">
     </div>
     <div class="form-group">
         <label>Activity Types</label>
-        <input type="text" class="form-control" name="activityType">
+        <input type="text" class="form-control" name="activityType" value="{{currentUser.activityType}}">
     </div>
-    <div class="form-group">
-        <label>Location</label>
-        <input list="location" name="location">
-          <datalist id="location">
-            <option value="Galway">
-            <option value="Dublin">
-            <option value="Cork">
-            <option value="Limerick">
-          </datalist> 
-    </div>
-    <button type="submit" class="btn btn-warning btn-lg">Login</button>
+    <button type="submit" class="btn btn-warning btn-lg">Update User Profile</button>
 </form>

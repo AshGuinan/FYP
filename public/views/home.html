@@ -1,21 +1,14 @@
-<div id="newData" class="jumbotron text-center" hidden="true">
-	<form ng-submit="addPlace()">
-      <div class="form-group">
-	        <label>Name</label>
-	        <input type="text" class="form-control" name="name" ng-model="newPlace.name">
-    	</div>
-    	<div class="form-group">
-        	<label>Address</label>
-        	<input type="text" class="form-control" name="address" ng-model="newPlace.address">
-   		</div>
-   		<div class="form-group">
-        	<label>Type</label>
-        	<input type="text" class="form-control" name="type" ng-model="newPlace.type">
-    	</div>
-    	<div class="form-group">
-        	<label>Price</label>
-        	<input type="text" class="form-control" name="type" ng-model="newPlace.price_level">
-    	</div>
-		<button type="submit" class="btn btn-warning btn-lg">Add!</button>
-    </form>
-</div>
+<div>Choose your city!</div>
+<form action="/updateLoc" method="post">
+    <div class="form-group">
+        <label>Location</label>
+        <input list="location" name="location" ng-model="currentUser.location">
+          <datalist id="location">
+            <option value="Galway">
+            <option value="Dublin">
+            <option value="Cork">
+            <option value="Limerick">
+          </datalist> 
+    </div>
+    <button type="submit" class="btn btn-warning btn-lg">Update User Profile</button>
+</form>
