@@ -54,26 +54,46 @@ module.exports = function(app, passport, raccoon) {
     app.post('/upvote', isLoggedIn, function(req, res) {
         raccoon.liked(req.user.userName, req.body.place).then(() => {
             console.log('UPvote confirmed!');
-            Place.findById(req.body.place).then(function(place){
-                console.log("The place had id " + req.body.place + " and we found " + place.name)
-                place.increment({beaconRating: 1}).then(function(){
-                    console.log('incremented places rating in db')
-                    res.send(200);
+            if(req.body.place.length > 6){
+                // it's a google id, nothing to increment here 
+                res.send({incremented: true});
+            }
+            else{
+                Place.findById(req.body.place).then(function(place){
+                    if(place){
+                        console.log("The place had id " + req.body.place + " and we found " + place.name)
+                        place.increment({beaconRating: 1}).then(function(){
+                            console.log('incremented places rating in db')
+                            res.send({incremented: true});
+                        });
+                    } else {
+                        res.send({incremented: true});    
+                    }
                 });
-            });
+            }
         });
     });
 
     app.post('/downvote', isLoggedIn, function(req, res) {
         raccoon.disliked(req.user.userName, req.body.place).then(() => {
             console.log('Downvoted...');
-            Place.findById(req.body.place).then(function(place){
-                console.log("The place had id " + req.body.place + " and we found " + place.name)
-                place.decrement({beaconRating: 1}).then(function(){
-                    console.log('decremented places rating in db')
-                    res.send(200);
+            if(req.body.place.length > 6){
+                // it's a google id, nothing to increment here 
+                res.send({decremented: true});
+            }
+            else{
+                Place.findById(req.body.place).then(function(place){
+                    if(place) {
+                        console.log("The place had id " + req.body.place + " and we found " + place.name)
+                        place.decrement({beaconRating: 1}).then(function(){
+                            console.log('decremented places rating in db')
+                            res.send({decremented: true});
+                        });
+                    } else {
+                        res.send({incremented: true});    
+                    }
                 });
-            });
+            }
         });
     });
 
