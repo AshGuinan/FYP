@@ -13,6 +13,10 @@
     <button ng-click="search('ICE')">ICE</button>
 
     <button ng-click="recommend()">Recommend Me!</button>
+    <div ng-if="noRecs">
+        Looks like we don't have any suggestions for you yet.
+        Try liking some of the results on the map!
+    </div>
     <div ng-repeat="(id,place) in recs track by $index">
         <div class="card" >
             <h3>

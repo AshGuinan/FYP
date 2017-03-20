@@ -38,7 +38,7 @@ var User = sequelize.define('User', {
     activityType: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "fun"
+        defaultValue: "education"
     },
     location: {
         type: DataTypes.STRING,
