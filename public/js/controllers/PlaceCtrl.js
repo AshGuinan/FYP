@@ -8,6 +8,7 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 	var Dublin = new google.maps.LatLng(53.3484285,-6.2569559);
 	var Cork = new google.maps.LatLng(51.8983147,-8.4822781);
 	var Limerick = new google.maps.LatLng(52.6676852,-8.6366651);
+	var geocoder= new google.maps.Geocoder();
 	window.text = $scope
 	$scope.radius = 1000;
 	$scope.markers =[];
@@ -213,7 +214,7 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 				'<div>'+
 					'<h3>' + place.name + '</h3>'+ 
 					'<p> Type: ' +  type + '</p>' +
-					'<p> This Address: ' +  place.vicinity + '</p>' +
+					'<p> This Address: ' +  $scope.custAddress + '</p>' +
 					'<p>' + placeRating + '</p>' +
 					'<p> Price Level' + place.price_level + '</p>' + 
 					'<a ng-click=upvote("' + place.place_id + '")> I liked it! </a>' +
@@ -229,7 +230,8 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 		console.log("adding custom place:", customPlace)
 		var loc = new google.maps.LatLng(customPlace.lat, customPlace.long);
 		var dist = google.maps.geometry.spherical.computeDistanceBetween(map.getCenter(),loc);
-		console.log(dist);
+		$scope.custAddress = customPlace.address;
+		geocodePosition(loc);
 		if (dist<=$scope.radius){
 			createMarker({
 				custom: true,
@@ -237,13 +239,29 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 				types: [customPlace.type],
 				beaconRating: customPlace.beaconRating,
 				name: customPlace.name,
-				vicinity: customPlace.address,
+				vicinity: $scope.custAddress,
 				geometry: {
 					location: loc
 				}
 			});	
 		}	
 	}
+
+function geocodePosition(pos) {
+  geocoder.geocode({
+		latLng: pos
+	}, function(responses) {
+		if (responses && responses.length > 0) {
+	    	console.log(responses);
+	    	console.log('a-ok');
+	    	$scope.custAddress = responses[0].formatted_address;
+	    	console.log($scope.custAddress);
+		} else {
+		    $scope.custAddress = 'Error here';
+		    console.log('heuston has a problem');
+		}
+	});
+}
 
 $http.get('/fetchPlaces')
 		.then(function (data){
