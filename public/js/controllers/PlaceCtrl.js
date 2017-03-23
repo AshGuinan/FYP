@@ -1,4 +1,5 @@
-angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http', '$compile', function($scope, $http, $compile) {
+angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceController', ['$scope', '$http', '$compile', '$actionButton', function($scope, $http, $compile, $actionButton) {
+	console.log(arguments);
 	var map;
 	var markers = [];
 	var newPlace;
@@ -189,10 +190,32 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 	}
 
 	function createMarker(place) {
+		var type = (place.types[0]).replace("_"," ");
+		if ($.inArray(place.types[0], $scope.education) > -1){
+			console.log('education');
+		}
+		if ($.inArray(place.types[0], $scope.indoorFun) > -1){
+			console.log('indoorFun');
+		}
+		if ($.inArray(place.types[0], $scope.outdoors) > -1){
+			console.log('outdoorFun');
+		}
+		if ($.inArray(place.types[0], $scope.ICE) > -1){
+			console.log('ICE');
+		}
+		if ($.inArray(place.types[0], $scope.culture) > -1){
+			console.log('culture');
+		}
+		if ($.inArray(place.types[0], $scope.goodToKnow) > -1){
+			console.log('goodToKnow');
+		}
+
 		var marker = new google.maps.Marker({
 			map: map,
-			position: place.geometry.location
+			position: place.geometry.location,
+			map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
 		});
+
 		marker.place = place;
 		markers.push(marker);
 		var placeRating;
@@ -205,7 +228,6 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 		} else if (place.rating !== undefined && place.beaconRating == undefined){
 			placeRating = "Google Rating: " + place.rating + "Stars";
 		}
-		var type = (place.types[0]).replace("_"," ");
 		console.log(place);
 		console.log('place')
 
@@ -242,7 +264,8 @@ angular.module('PlaceCtrl', []).controller('PlaceController', ['$scope', '$http'
 				vicinity: $scope.custAddress,
 				geometry: {
 					location: loc
-				}
+				},
+				map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
 			});	
 		}	
 	}
@@ -279,5 +302,34 @@ $http.get('/fetchPlaces')
 //Do the things!
 	initMap();
 	// map.addListener("bounds_changed",$scope.search,false);
-
+	console.log("$actionButton", $actionButton);
+	$actionButton.create({
+	    mainAction: {
+	      icon: 'ion-android-create',
+	      backgroundColor: 'blue',
+	      textColor: ' white',
+	      onClick: function() {
+	        console.log('clicked main BUTTON');
+	      }
+	    },
+	    buttons: [{
+	      label: 'Logout',
+	      backgroundColor: 'red',
+	      iconColor: 'white',
+	      onClick: function() {
+	        console.log('clicked logout');
+	      }
+	    }, {
+	      label: 'Settings',
+	      onClick: function() {
+	        console.log('clicked Settings');
+	      }
+	    }, {
+	      label: 'Recommendations',
+	      onClick: function() {
+	        console.log('clicked Recommendations');
+	      }
+	    }]
+	  });
+	  
 }]);

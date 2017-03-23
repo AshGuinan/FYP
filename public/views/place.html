@@ -1,16 +1,50 @@
-<div class="jumbotron text-center">
-	<div id="map"></div>
+<!-- <div class="bar bar-subheader bar-stable bar-positive">
+        <span id="clearMarkers">Clear Markers</span>
+        <input type="number" ng-model="radius"/>
+        <button class="button-full" ng-click="search('education')">Education</button>
+        <button class="button-full" ng-click="search('outdoors')">Outdoors</button>
+        <button class="button-full" ng-click="search('indoorFun')">Indoor</button>
+        <button class="button-full" ng-click="search('food')">Food and Drink</button>
+        <button class="button-full" ng-click="search('culture')">Culture</button>
+        <button class="button-full" ng-click="search('goodToKnow')">Good to Know</button>
+        <button class="button-full" ng-click="search('ICE')">Emergency</button>
+
+</div> -->
+
+
+    <ion-header-bar id="filters" align-title="left" class="bar-positive">
+        <div class="row">
+            <div class="col">
+                <i class="icon ion-university" ng-click="search('education')"></i>
+            </div>   
+            <div class="col">
+                <i class="icon ion-leaf" ng-click="search('outdoors')"></i>
+            </div> 
+            <div class="col">
+                <i class="icon ion-happy" ng-click="search('indoorFun')"></i>
+            </div>
+            <div class="col" ng-click="search('food')">
+                <i class="icon ion-fork" ></i>
+                <i class="icon ion-knife" ></i>
+           </div>
+            <div class="col">
+                <i class="icon ion-easel" ng-click="search('culture')"></i>
+            </div>
+            <div class="col">
+                <i class="icon ion-information-circled" ng-click="search('goodToKnow')"></i>
+           </div>
+            <div class="col">
+                <i class="icon ion-alert-circled" ng-click="search('ICE')"></i>
+            </div>
+        </div>
+    </ion-header-bar>
+
+    <ion-content>
+        <div id="map"></div>
+    </ion-content>
+
+
 	<!--<a>Zoo</a>-->
-	<input type="number" ng-model="radius"/>
-	{{radius}}
-	<p id="clearMarkers">Clear Markers</p>
-    <button ng-click="search('education')">Education</button>
-    <button ng-click="search('outdoors')">Outdoors</button>
-    <button ng-click="search('indoorFun')">Indoor</button>
-    <button ng-click="search('food')">Food and Drink</button>
-    <button ng-click="search('culture')">Culture</button>
-    <button ng-click="search('goodToKnow')">Good to Know</button>
-    <button ng-click="search('ICE')">ICE</button>
 
     <button ng-click="recommend()">Recommend Me!</button>
     <div ng-if="noRecs">
@@ -18,7 +52,7 @@
         Try liking some of the results on the map!
     </div>
     <div ng-repeat="(id,place) in recs track by $index">
-        <div class="card" >
+        <div class="card">
             <h3>
                 {{place.name}}
             </h3>
@@ -68,4 +102,3 @@
     	</div>
 		<button type="submit" class="btn btn-warning btn-lg">Add!</button>
     </form>
-</div>

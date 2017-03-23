@@ -1,6 +1,17 @@
 body { padding-top:30px; }
-.angular-google-map-container { height: 400px; }
 #map {
-    height: 400px;
-    width: 400px;
+    height: 70em;
+    width: 100%;
+}
+#filters .row{
+	margin-left:10px;
+}
+
+.action-button-small {
+	display: none !important;
+}
+
+.action-button-small-container {
+	padding-bottom: 115px !important;
+	padding-right: 0px !important;
 }
