@@ -1,17 +1,32 @@
 body { padding-top:30px; }
 #map {
-    height: 70em;
+    height: 93vh;
     width: 100%;
+    overflow: hidden;
 }
-#filters .row{
-	margin-left:10px;
+.row{
+	margin-left:5%;
+	margin-right: 5%;
 }
 
 .action-button-small {
 	display: none !important;
 }
-
+.action-button-small--label {
+	margin: 5px 20px !important;
+}
 .action-button-small-container {
-	padding-bottom: 115px !important;
 	padding-right: 0px !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    top:0;
+}
+.row a {
+	color: white;
+	/*margin-left: 12.5px;*/
+}
+.col{
+	text-align: center;
+}
+.col i {
+	font-size: 120%;
 }

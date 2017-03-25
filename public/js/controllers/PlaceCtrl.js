@@ -1,5 +1,4 @@
-angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceController', ['$scope', '$http', '$compile', '$actionButton', function($scope, $http, $compile, $actionButton) {
-	console.log(arguments);
+angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceController', ['$scope', '$http', '$compile', '$location', '$actionButton', function($scope, $http, $compile, $location, $actionButton) {
 	var map;
 	var markers = [];
 	var newPlace;
@@ -63,8 +62,18 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 		}
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: $scope.initCenter,
-			zoom: 15
+			zoom: 15,
+			zoomControl: true,
+			zoomControlOptions: {
+				position: google.maps.ControlPosition.LEFT_BOTTOM
+			},
+			scaleControl: true,
+			streetViewControl: true,
+			streetViewControlOptions: {
+				position: google.maps.ControlPosition.LEFT_BOTTOM
+			},
 		});
+		
 		infowindow = new google.maps.InfoWindow();
 		service = new google.maps.places.PlacesService(map);
 		
@@ -86,7 +95,8 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 	        nPData.open(map, $scope.newUnsavedPlace);
 		});
 	}	
-
+// var clearMarker = document.getElementById("clearMarkers");
+// 	clearMarker.addEventListener("click", removeMarkers, false);
 	$scope.search = function(input){
 		var sType = $scope[input];
 		console.log('searching for '+ input);
@@ -191,29 +201,29 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 
 	function createMarker(place) {
 		var type = (place.types[0]).replace("_"," ");
-		if ($.inArray(place.types[0], $scope.education) > -1){
-			console.log('education');
-		}
-		if ($.inArray(place.types[0], $scope.indoorFun) > -1){
-			console.log('indoorFun');
-		}
-		if ($.inArray(place.types[0], $scope.outdoors) > -1){
-			console.log('outdoorFun');
-		}
-		if ($.inArray(place.types[0], $scope.ICE) > -1){
-			console.log('ICE');
-		}
-		if ($.inArray(place.types[0], $scope.culture) > -1){
-			console.log('culture');
-		}
-		if ($.inArray(place.types[0], $scope.goodToKnow) > -1){
-			console.log('goodToKnow');
-		}
+		// if ($.inArray(place.types[0], $scope.education) > -1){
+		// 	console.log('education');
+		// }
+		// if ($.inArray(place.types[0], $scope.indoorFun) > -1){
+		// 	console.log('indoorFun');
+		// }
+		// if ($.inArray(place.types[0], $scope.outdoors) > -1){
+		// 	console.log('outdoorFun');
+		// }
+		// if ($.inArray(place.types[0], $scope.ICE) > -1){
+		// 	console.log('ICE');
+		// }
+		// if ($.inArray(place.types[0], $scope.culture) > -1){
+		// 	console.log('culture');
+		// }
+		// if ($.inArray(place.types[0], $scope.goodToKnow) > -1){
+		// 	console.log('goodToKnow');
+		// }
 
 		var marker = new google.maps.Marker({
 			map: map,
 			position: place.geometry.location,
-			map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
+			//map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
 		});
 
 		marker.place = place;
@@ -226,25 +236,31 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 		if(place.rating == undefined && place.beaconRating !== undefined){
 			placeRating = "Beacon Rating: " + place.beaconRating;
 		} else if (place.rating !== undefined && place.beaconRating == undefined){
-			placeRating = "Google Rating: " + place.rating + "Stars";
+			placeRating = "Google Rating: " + place.rating + " Stars";
+		} else if (place.rating == undefined && place.beaconRating == undefined){
+			placeRating = " ";
 		}
 		console.log(place);
 		console.log('place')
+		if ($scope.custAddress==undefined){
+			$scope.custAddress = '';
+		} 
 
 		google.maps.event.addListener(marker, 'click', function() {
 			content = 
 				'<div>'+
 					'<h3>' + place.name + '</h3>'+ 
 					'<p> Type: ' +  type + '</p>' +
-					'<p> This Address: ' +  $scope.custAddress + '</p>' +
+					'<p> This Address: ' +  $scope.custAddress + place.vicinity + '</p>' +
 					'<p>' + placeRating + '</p>' +
 					'<p> Price Level' + place.price_level + '</p>' + 
-					'<a ng-click=upvote("' + place.place_id + '")> I liked it! </a>' +
-					'<a ng-click=downvote("' + place.place_id + '")> Not for me...  </a>' +
+					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
+					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
 				'</div>';
 
 			infowindow.setContent( $compile(content)($scope)[0] )
 			infowindow.open(map, this);
+			$scope.custAddress = '';
 		});
 	}
 
@@ -264,8 +280,7 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 				vicinity: $scope.custAddress,
 				geometry: {
 					location: loc
-				},
-				map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
+				}
 			});	
 		}	
 	}
@@ -305,7 +320,7 @@ $http.get('/fetchPlaces')
 	console.log("$actionButton", $actionButton);
 	$actionButton.create({
 	    mainAction: {
-	      icon: 'ion-android-create',
+	      icon: 'ion-gear-b',
 	      backgroundColor: 'blue',
 	      textColor: ' white',
 	      onClick: function() {
@@ -318,11 +333,13 @@ $http.get('/fetchPlaces')
 	      iconColor: 'white',
 	      onClick: function() {
 	        console.log('clicked logout');
+	        $location.path('/logout')
 	      }
 	    }, {
 	      label: 'Settings',
 	      onClick: function() {
 	        console.log('clicked Settings');
+	        $location.path('/user')
 	      }
 	    }, {
 	      label: 'Recommendations',

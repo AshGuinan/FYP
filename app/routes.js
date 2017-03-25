@@ -21,7 +21,7 @@ module.exports = function(app, passport, raccoon) {
 	app.post('/login',
 		passport.authenticate('local-login', { failureRedirect: '/fail' }),
 		function(req, res) {
-			res.redirect('/');
+			res.redirect('/places');
             console.log('User: '+req.user.userName);
 		});   
 
@@ -52,26 +52,42 @@ module.exports = function(app, passport, raccoon) {
     //TODO: Lock down voting, unlike, undislike
 
     app.post('/upvote', isLoggedIn, function(req, res) {
-        raccoon.liked(req.user.userName, req.body.place).then(() => {
-            console.log('UPvote confirmed!');
-            if(req.body.place.length > 6){
-                // it's a google id, nothing to increment here 
-                res.send({incremented: true});
-            }
-            else{
-                Place.findById(req.body.place).then(function(place){
-                    if(place){
-                        console.log("The place had id " + req.body.place + " and we found " + place.name)
-                        place.increment({beaconRating: 1}).then(function(){
-                            console.log('incremented places rating in db')
+        var voted = false;
+        raccoon.allWatchedFor(req.user.userName).then((results) => {
+              // returns an array of all the items that user has liked or disliked.
+              for(var x=0; x<results.length; x++){
+                if(req.body.place==results[x]){
+                    console.log('Already voted');
+                    voted = true;
+                    break;
+                }
+              }
+            }).then(()=>{
+                if(voted==false){
+                    raccoon.liked(req.user.userName, req.body.place).then(() => {
+                        console.log('Upvote confirmed!');
+                        //Check id not already liked by user - racoon?
+                        if(req.body.place.length > 6){
+                            // it's a google id, nothing to increment here 
                             res.send({incremented: true});
-                        });
-                    } else {
-                        res.send({incremented: true});    
-                    }
-                });
-            }
-        });
+                        } else {
+                            Place.findById(req.body.place).then(function(place){
+                                if(place){
+                                    console.log("The place had id " + req.body.place + " and we found " + place.name)
+                                    place.increment({beaconRating: 1}).then(function(){
+                                        console.log('incremented places rating in db')
+                                        res.send({incremented: true});
+                                    });
+                                } else {
+                                    res.send({incremented: true});    
+                                }
+                            });
+                        }
+                    });
+                }
+                
+            });
+        
     });
 
     app.post('/downvote', isLoggedIn, function(req, res) {
@@ -163,7 +179,7 @@ module.exports = function(app, passport, raccoon) {
             activityType: req.body.activityType,
             location: req.body.location 
         }).then(function () {
-            res.redirect('/');
+            res.redirect('/places');
         })
     });
 
@@ -171,7 +187,7 @@ module.exports = function(app, passport, raccoon) {
         req.user.updateAttributes({
             location: req.body.location
         }).then(function () {
-            res.redirect('/');
+            res.redirect('/places');
         })
     });
 
@@ -224,7 +240,7 @@ module.exports = function(app, passport, raccoon) {
         }
         else {
             // if they aren't redirect them to the home page
-            res.sendfile('./public/views/fail.html');
+            res.sendfile('./public/views/user.html');
             console.log('not logged in');
         }
     }

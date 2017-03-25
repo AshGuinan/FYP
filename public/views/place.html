@@ -1,18 +1,4 @@
-<!-- <div class="bar bar-subheader bar-stable bar-positive">
-        <span id="clearMarkers">Clear Markers</span>
-        <input type="number" ng-model="radius"/>
-        <button class="button-full" ng-click="search('education')">Education</button>
-        <button class="button-full" ng-click="search('outdoors')">Outdoors</button>
-        <button class="button-full" ng-click="search('indoorFun')">Indoor</button>
-        <button class="button-full" ng-click="search('food')">Food and Drink</button>
-        <button class="button-full" ng-click="search('culture')">Culture</button>
-        <button class="button-full" ng-click="search('goodToKnow')">Good to Know</button>
-        <button class="button-full" ng-click="search('ICE')">Emergency</button>
-
-</div> -->
-
-
-    <ion-header-bar id="filters" align-title="left" class="bar-positive">
+<ion-header-bar id="filters" align-title="left" class="bar-positive">
         <div class="row">
             <div class="col">
                 <i class="icon ion-university" ng-click="search('education')"></i>
@@ -28,77 +14,50 @@
                 <i class="icon ion-knife" ></i>
            </div>
             <div class="col">
-                <i class="icon ion-easel" ng-click="search('culture')"></i>
+                <i class="icon ion-paintbrush" ng-click="search('culture')"></i>
             </div>
             <div class="col">
                 <i class="icon ion-information-circled" ng-click="search('goodToKnow')"></i>
            </div>
             <div class="col">
-                <i class="icon ion-alert-circled" ng-click="search('ICE')"></i>
+                <i class="icon ion-help-buoy" ng-click="search('ICE')"></i>
             </div>
         </div>
-    </ion-header-bar>
-
-    <ion-content>
+</ion-header-bar>
+<ion-content scroll="false">
         <div id="map"></div>
+
+    	<div ng-if="isAdmin">
+    		<div ng-repeat="place in allPlaces track by $index">
+    		  {{place.name}},
+    		  {{place.address}},
+    		  {{place.type}},
+    		  {{place.user}},
+    		  {{place.verified}}
+    		  <button ng-click="verify(place.id)">Verify Me! </button> 
+    		</div>
+    	</div>
     </ion-content>
-
-
-	<!--<a>Zoo</a>-->
-
-    <button ng-click="recommend()">Recommend Me!</button>
-    <div ng-if="noRecs">
-        Looks like we don't have any suggestions for you yet.
-        Try liking some of the results on the map!
-    </div>
-    <div ng-repeat="(id,place) in recs track by $index">
-        <div class="card">
-            <h3>
-                {{place.name}}
-            </h3>
-            <p>
-                Type: {{place.types[0]}}
-            </p>
-            <p>
-                Google Rating: {{place.rating}}
-            </p>
-            <p>
-                Price Level: {{place.price_level}}
-            </p>
-        </div>
-    </div>
-	<div ng-if="isAdmin">
-		<div ng-repeat="place in allPlaces track by $index">
-		  {{place.name}},
-		  {{place.address}},
-		  {{place.type}},
-		  {{place.user}},
-		  {{place.verified}}
-		  <button ng-click="verify(place.id)">Verify Me! </button> 
-		</div>
-	</div>
-
-</div>
 <div id="newData" hidden="true">
 	<form ng-submit="addPlace()">
       <div class="form-group">
 	        <label>Name</label>
-	        <input type="text" class="form-control" name="name" ng-model="newPlace.name">
+	        <input type="text" class="form-control" placeholder="name" name="name" ng-model="newPlace.name">
     	</div>
-    	<div class="form-group">
-        	<label>Address</label>
-        	<input type="text" class="form-control" name="address" ng-model="newPlace.address">
-   		</div>
    		<div class="form-group">
         	<label>Type</label>
             <select ng-model="newPlace.type" ng-options="o as o for o in allTypes">
-                
             </select>
-        	<!-- <input type="text" class="form-control" name="type" ng-model="newPlace.type"> -->
     	</div>
     	<div class="form-group">
         	<label>Price</label>
-        	<input type="text" class="form-control" name="type" ng-model="newPlace.price_level">
+        	<select ng-model="newPlace.price_level">
+             <option value="0">Free</option>   
+             <option value="1">Inexpensive</option>   
+             <option value="2">Moderate</option>   
+             <option value="3">Expensive</option>   
+             <option value="4">Very Expensive</option>   
+            </select>
     	</div>
-		<button type="submit" class="btn btn-warning btn-lg">Add!</button>
+		<button type="submit">Add!</button>
     </form>

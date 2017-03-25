@@ -1,6 +1,5 @@
-angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootScope', '$http', '$compile', function($scope, $rootScope, $http, $compile) {
-	$scope.user = 'Welcome!';
-	
+angular.module('MainCtrl', ['ionic']).controller('MainController', ['$scope', '$rootScope', '$http', '$compile', function($scope, $rootScope, $http, $compile) {
+	//$scope.user = 'Welcome!';
 	$rootScope.latlong;
 
 	$scope.saveData = function(){
@@ -12,9 +11,6 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 	// 		markers[i].setMap(null);
 	// 	}
 	// }
-
-	//var clearMarker = document.getElementById("clearMarkers");
-	//clearMarker.addEventListener("click", removeMarkers, false);
 
 	$http.get('/me')
 		.then(function (success){
@@ -60,8 +56,6 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 		})
 	}
 
-	
-
 	$scope.verify = function(id){
 		console.log(id);
 		if($scope.isAdmin){
@@ -95,5 +89,4 @@ angular.module('MainCtrl', []).controller('MainController', ['$scope', '$rootSco
 		console.log('error loading playgrounds');
 		console.log(response);
 	}
-
 }]);

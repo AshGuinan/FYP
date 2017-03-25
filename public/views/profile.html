@@ -1,26 +1,61 @@
-<form action="/updateDetails" method="post">
-    <div class="form-group">
-        {{currentUser.userName}}
-        <input type="hidden" class="form-control" name="userName" value="{{currentUser.userName}}">
-    </div>
-    <div class="form-group">
-        <input type="hidden" class="form-control" name="location" value="{{currentUser.location}}">
-    </div>
-    <div class="form-group">
-        <label>Budget</label>
-        <input type="text" class="form-control" name="budget" value="{{currentUser.budget}}">
-    </div>
-    <div class="form-group">
-        <label>Num Children</label>
-        <input type="text" class="form-control" name="numChildren" value="{{currentUser.numChildren}}">
-    </div>
-    <div class="form-group">
-        <label>Age of Children</label>
-        <input type="text" class="form-control" name="ageChildren" value="{{currentUser.ageChildren}}">
-    </div>
-    <div class="form-group">
-        <label>Activity Types</label>
-        <input type="text" class="form-control" name="activityType" value="{{currentUser.activityType}}">
-    </div>
-    <button type="submit" class="btn btn-warning btn-lg">Update User Profile</button>
-</form>
+<ion-header-bar id="filters" align-title="left" class="bar-positive">
+
+  <h1 class="title">Settings</h1>
+
+  <ion-button class="button-clear">
+    <i class="ion-arrow-left-c"></i> Back
+  </ion-button>
+</ion-header-bar>
+
+<ion-content>
+    <form action="/updateDetails" method="post">
+        <div class="form-group">
+            {{currentUser.userName}}
+            <input type="hidden" class="form-control" name="userName" value="{{currentUser.userName}}">
+        </div>
+        <div class="form-group">
+            <label>Location</label>
+            <select name="location" ng-model="currentUser.location">
+                <option value="Galway">Galway</option>
+                <option value="Dublin">Dublin</option>
+                <option value="Cork">Cork</option>
+                <option value="Limerick">Limerick</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Budget</label>
+<!--             <input type="text" class="form-control" name="budget" value="{{currentUser.budget}}"> -->
+            <select ng-model="currentUser.budget" name="budget">
+                 <option value="0">Free</option>   
+                 <option value="1">Inexpensive</option>   
+                 <option value="2">Moderate</option>   
+                 <option value="3">Expensive</option>   
+                 <option value="4">Very Expensive</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Ages of Children</label>
+<!--             <input type="text" class="form-control" name="ageChildren" value="{{currentUser.ageChildren}}"> -->
+            <select ng-model="currentUser.ageChildren" name="ageChildren">
+                 <option value="0">0-3</option>   
+                 <option value="1">4-6</option>   
+                 <option value="2">7-10</option>   
+                 <option value="3">11-13</option>   
+                 <option value="4">14+</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Activity Preference</label>
+            <!-- <input type="text" class="form-control" name="activityType" value="{{currentUser.activityType}}"> -->
+            <select ng-model="currentUser.activityType" name="activityType">
+                 <option value="education">Educational</option>   
+                 <option value="outdoors">Outdoor Activities</option>   
+                 <option value="indoorFun">Indoor Activities</option>   
+                 <option value="food">Places to Eat</option>   
+                 <option value="culture">Culture</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-warning btn-lg">Update User Profile</button>
+    </form>
+</ion-content>
