@@ -1,26 +1,27 @@
 <ion-header-bar id="filters" align-title="left" class="bar-positive">
         <div class="row">
-            <div class="col">
-                <i class="icon ion-university" ng-click="search('education')"></i>
+            <div class="col" ng-class="{selected: activeTypes.indexOf('education') > 0}">
+                <i class="icon ion-university" ng-click="search('education')" 
+></i>
             </div>   
-            <div class="col">
+            <div class="col" ng-class="{selected: isActive('outdoors')}">
                 <i class="icon ion-leaf" ng-click="search('outdoors')"></i>
             </div> 
-            <div class="col">
-                <i class="icon ion-happy" ng-click="search('indoorFun')"></i>
+            <div class="col" ng-class="{selected: isActive('indoorFun')}">
+                <i class="icon ion-happy" ng-click="search('indoorFun')" ></i>
             </div>
-            <div class="col" ng-click="search('food')">
+            <div class="col" ng-click="search('food')" ng-class="{selected: isActive('food')}">
                 <i class="icon ion-fork" ></i>
                 <i class="icon ion-knife" ></i>
            </div>
-            <div class="col">
-                <i class="icon ion-paintbrush" ng-click="search('culture')"></i>
+            <div class="col" ng-class="{selected: isActive('culture')}">
+                <i class="icon ion-paintbrush" ng-click="search('culture')" ></i>
             </div>
-            <div class="col">
-                <i class="icon ion-information-circled" ng-click="search('goodToKnow')"></i>
+            <div class="col" ng-class="{selected: isActive('goodToKnow')}">
+                <i class="icon ion-information-circled" ng-click="search('goodToKnow')" ></i>
            </div>
-            <div class="col">
-                <i class="icon ion-help-buoy" ng-click="search('ICE')"></i>
+            <div class="col" ng-class="{selected: isActive('ICE')}">
+                <i class="icon ion-help-buoy" ng-click="search('ICE')" ></i>
             </div>
         </div>
 </ion-header-bar>

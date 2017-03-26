@@ -17,6 +17,7 @@ angular
 	$scope.playgrounds =[];
 	$scope.lat;
 	$scope.long;
+	$scope.activeTypes = [];
 	$scope.newPlace = {
 		name: '',
 		address: '',
@@ -94,25 +95,53 @@ angular
 // 	clearMarker.addEventListener("click", removeMarkers, false);
 	$scope.centerMap =function(location){
 		map.setCenter(location);
+		$ionicSideMenuDelegate.toggleRight();
 	};
+
 	$scope.search = function(input){
-		var sType = $scope[input];
-		console.log('searching for '+ input);
-		console.log(sType)
-		for(var x=0; x<sType.length; x++){
-			type = sType[x]
-			console.log(type);
-			service.nearbySearch({
-				location: map.getCenter(),
-				radius: $scope.radius,
-				type: [type],
-			}, searchCallback.bind(input));
+		if($scope.activeTypes.indexOf(input) == -1){
+			showPlacesOfType(input);		
+		} else {
+			hidePlacesOfType(input);
 		}
 	};
 
+	$scope.isActive = function(type){
+		return $scope.activeTypes.indexOf(type) > -1;
+	}
+
+	showPlacesOfType = function(type){
+		$scope.activeTypes.push(type);
+		var sType = $scope[type];
+
+		for(var x=0; x<sType.length; x++){
+			subtype = sType[x]
+			console.log(subtype);
+			service.nearbySearch({
+				location: map.getCenter(),
+				radius: $scope.radius,
+				type: [subtype],
+			}, searchCallback.bind(type));
+		}		
+	}
+
+	hidePlacesOfType = function(type){
+		var index = $scope.activeTypes.indexOf(type);
+		$scope.activeTypes.splice(index,1);
+		var sType = $scope[type];
+		
+		for(var i =0; i< markers.length; i++){
+			var marker = markers[i];
+			if(marker.place.type == type){
+				marker.setMap(null)
+			}
+		} 
+		// loop over places and hide those which match the type
+	}
+
 	$scope.addPlace = function(){
 		Place.addPlace($scope.newPlace, function(place){
-			Place.createMarkerFromCustomPlace(map,place);
+			createMarkerFromCustomPlace(place);
 			resetNewPlaceForm()
 			nPData.close();
 		});
@@ -130,6 +159,7 @@ angular
 		console.log("trggering searchCallback for place of type: ",type);
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
 			for (var i = 0; i < results.length; i++) {
+				results[i].type = type;
 				createMarker(results[i]);
 			}
 		}
@@ -140,6 +170,7 @@ angular
 	}
 
 	function createMarker(place) {
+		console.log("place " + place.place_id + " has type " + place.type)
 		var type = (place.types[0]).replace("_"," ");
 
 		var marker = new google.maps.Marker({
@@ -201,7 +232,7 @@ angular
 			$scope.recs = {};
 			if (places && places.length > 0){
 	            for(i=0;i<places.length;i++){
-					Place.createMarkerFromCustomPlace(map, places[i]);
+					createMarkerFromCustomPlace(places[i]);
 				}
 			}
 			console.log(recommendations.length);

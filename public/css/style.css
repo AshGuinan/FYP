@@ -30,6 +30,10 @@ body { padding-top:30px; }
 .col i {
 	font-size: 120%;
 }
+.col.selected i {
+	color:red;
+	font-size: 140%;
+}
 
 ion-side-menu {
 	overflow-y: auto !important;
