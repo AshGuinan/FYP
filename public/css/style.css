@@ -39,3 +39,11 @@ ion-side-menu {
 	overflow-y: auto !important;
 	padding-top:50px !important;
 }
+
+.map-icon-label .map-icon {
+	font-size: 24px;
+	color: #FFFFFF;
+	line-height: 48px;
+	text-align: center;
+	white-space: nowrap;
+}

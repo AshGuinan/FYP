@@ -77,7 +77,8 @@ angular
 
 			$scope.newUnsavedPlace = new google.maps.Marker({
 	            position: event.latLng,
-	            map: map
+	            map: map,
+	            label : 'A'
           	});
 
 	        nPData.setContent(
@@ -122,16 +123,6 @@ angular
 				type: [subtype],
 			}, searchCallback.bind(type));
 		}		
-	}
-
-//Workaround for a bug with indoor places - 
-//movie theatre appears to be bugged, returning unwanted types...
-	$scope.indoorType = function(){
-		service.nearbySearch({
-			location: map.getCenter(),
-			radius: $scope.radius,
-			type: 'bowling_alley'
-		}, searchCallback.bind('indoorFun'));
 	}
 
 	hidePlacesOfType = function(type){
@@ -181,10 +172,43 @@ angular
 	function createMarker(place) {
 		console.log("place " + place.place_id + " has type " + place.type)
 		var type = (place.types[0]).replace("_"," ");
+		var iconLabel = '';	
+		switch(place.type){
+			case 'education':
+				iconLabel = '<span class="map-icon icon ion-university"></span>';
+				break;
+			case 'outdoors':
+				iconLabel = '<span class="map-icon icon ion-leaf"></span>';
+				break;
+			case 'indoorFun':
+				iconLabel = '<span class="map-icon icon ion-happy"></span>';
+				break;
+			case 'food':
+				iconLabel = '<span class="map-icon icon ion-fork"></span>';
+				break;
+			case 'culture':
+				iconLabel = '<span class="map-icon icon ion-paintbrush"></span>';
+				break;
+			case 'goodToKnow':
+				iconLabel = '<span class="map-icon icon ion-help-buoy"></span>';
+				break;
+			case 'ICE':
+				iconLabel = '<span class="map-icon icon ion-information-circled"></span>';
+				break;
 
-		var marker = new google.maps.Marker({
+		}
+		console.log(iconLabel);
+		var marker = new Marker({
 			map: map,
 			position: place.geometry.location,
+			icon: {
+				path: SQUARE_PIN,
+				fillColor: '#00CCBB',
+				fillOpacity: 1,
+				strokeColor: '',
+				strokeWeight: 0
+			},
+			map_icon_label: iconLabel
 		});
 
 		marker.place = place;
