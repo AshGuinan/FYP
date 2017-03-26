@@ -1,6 +1,6 @@
 angular
 	.module('UserService', [])
-	.factory('User', ['$http', function($http) {
+	.factory('User', ['$http', '$route', function($http, $route) {
 
 	User = {};
 
@@ -9,7 +9,7 @@ angular
 		$http.get('/me').then(
 			function (success){
 				console.log("success getting user from /me endpoint", success);
-	            if(success.data.userName !== ""){
+	            if( typeof success.data == 'object' && success.data.userName !== ""){
 	                callback(success.data);
 	           	} else {
 	                callback(null);
@@ -35,6 +35,15 @@ angular
 			console.log('Nice try pal');
 		}
 		
+	}
+
+	User.logout = function(){
+		console.log('logging out...');
+		$http.get('/api/logout').then(function(success){
+			console.log('logged out');
+			window.location.reload(false); 
+
+		});      
 	}
 
 

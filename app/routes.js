@@ -27,9 +27,7 @@ module.exports = function(app, passport, raccoon) {
 
     app.get('/api/logout',
         function(req, res){
-            console.log('\n\n\n\nAbout to log out');
             req.logOut();
-
             res.clearCookie('connect.sid', {expires: new Date()});
             req.session.destroy(function (err) {
                 console.log('logged out');
@@ -52,6 +50,11 @@ module.exports = function(app, passport, raccoon) {
     app.get('/api/frontPage', frontPage, function(req, res) {
         console.log('Front page loading');
     });
+
+    app.get('/me', isLoggedIn, function(req, res) {
+        res.send(req.user);
+    });
+
 
     //TODO: Lock down voting, unlike, undislike
 

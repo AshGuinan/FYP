@@ -184,13 +184,7 @@ angular
 		$http.post('/upvote', {place: place}).then(function(success){
 			console.log('upvoted!');
 		})
-	}
-	$scope.logout = function(){
-		$http.get('/api/logout').then(function(success){
-			// refreshing will bring the user to the login page
-			location.href="/"
-		});
-	}
+	};
 
 	$scope.downvote = function(place){
 		console.log('Downvote place', place);
@@ -251,7 +245,7 @@ angular
 				$scope.noRecs=true;
 			}
 		});
-	}
+	};
 
 
 	createMarkerFromCustomPlace = function(customPlace){
@@ -278,6 +272,8 @@ angular
 
 
 	User.fetchLoggedInUser(function(user){
+		if(user == null)
+			return;
 		console.log('init place  ctrl after fetching user')
 		$scope.currentUser = user;
 		initMap();
@@ -301,8 +297,8 @@ angular
 	      iconColor: 'white',
 	      onClick: function() {
 	        console.log('clicked logout');
-	        $location.path('/logout')
-	      }
+			User.logout();
+		  }	
 	    }, {
 	      label: 'Settings',
 	      onClick: function() {
