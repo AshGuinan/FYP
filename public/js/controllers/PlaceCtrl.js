@@ -28,12 +28,12 @@ angular
 	};
 	
 	$scope.education = ['aquarium', 'book_store','museum'];
-	$scope.indoorFun = ['bowling_alley','movie_theatre'];
+	$scope.indoorFun = ['bowling_alley','museum', 'aquarium'];
 	$scope.food = ['bakery', 'cafe','restaurant'];
 	$scope.outdoors = ['amusement_park', 'park','zoo'];
 	$scope.culture = ['art_gallery', 'library'];
-	$scope.goodToKnow = ['ATM', 'Bank','Gas_Station', 'taxi_stand', 'train_station', 'transit_station', 'post_office', 'pharmacy'];
-	$scope.ICE = ['police', 'hospital', 'doctor', 'dentist', 'embassy', 'car_repair'];
+	$scope.goodToKnow = ['bank', 'gas_station', 'taxi_stand', 'train_station', 'post_office', 'pharmacy'];
+	$scope.ICE = ['police', 'hospital', 'doctor', 'embassy', 'car_repair'];
 	// combine list of all place sub types
 	$scope.allTypes =  $scope.education.concat( 
 		$scope.indoorFun.concat(
@@ -113,7 +113,6 @@ angular
 	showPlacesOfType = function(type){
 		$scope.activeTypes.push(type);
 		var sType = $scope[type];
-
 		for(var x=0; x<sType.length; x++){
 			subtype = sType[x]
 			console.log(subtype);
@@ -123,6 +122,16 @@ angular
 				type: [subtype],
 			}, searchCallback.bind(type));
 		}		
+	}
+
+//Workaround for a bug with indoor places - 
+//movie theatre appears to be bugged, returning unwanted types...
+	$scope.indoorType = function(){
+		service.nearbySearch({
+			location: map.getCenter(),
+			radius: $scope.radius,
+			type: 'bowling_alley'
+		}, searchCallback.bind('indoorFun'));
 	}
 
 	hidePlacesOfType = function(type){
