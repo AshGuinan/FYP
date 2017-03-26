@@ -1,6 +1,6 @@
 body { padding-top:30px; }
 #map {
-    height: 93vh;
+    height: 100vh;
     width: 100%;
     overflow: hidden;
 }
@@ -29,4 +29,9 @@ body { padding-top:30px; }
 }
 .col i {
 	font-size: 120%;
+}
+
+ion-side-menu {
+	overflow-y: auto !important;
+	padding-top:50px !important;
 }

@@ -39,7 +39,11 @@ module.exports = function(app, passport, raccoon) {
 
     app.get('/api/places', isLoggedIn, function(req, res) {
         res.sendfile('./public/views/place.html');
-	});
+    });
+
+    app.get('/api/recommend', isLoggedIn, function(req, res) {
+        res.sendfile('./public/views/recommend.html');
+    });
 
     app.get('/api/user', userPage, function(req, res) {
         console.log('User page loading');
@@ -53,13 +57,16 @@ module.exports = function(app, passport, raccoon) {
 
     app.post('/upvote', isLoggedIn, function(req, res) {
         var voted = false;
+        console.log('upvote called!')
         raccoon.allWatchedFor(req.user.userName).then((results) => {
               // returns an array of all the items that user has liked or disliked.
               for(var x=0; x<results.length; x++){
                 if(req.body.place==results[x]){
                     console.log('Already voted');
                     voted = true;
-                    break;
+                    raccoon.unliked(req.user.userName, req.body.place).then(() => {
+                        console.log('like undone!');
+                    });
                 }
               }
             }).then(()=>{
@@ -111,10 +118,6 @@ module.exports = function(app, passport, raccoon) {
                 });
             }
         });
-    });
-
-    app.get('/me', isLoggedIn, function(req, res) {
-        res.send(req.user);
     });
 
     app.get('/fetchPlaces', isLoggedIn, function(req, res) {

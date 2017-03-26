@@ -4,7 +4,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 		// home page
 		.when('/', {
 			templateUrl: 'api/frontPage',
-			controller: 'MainController'
+			controller: 'PlaceController'
 		})
 		.when('/user', {
 			templateUrl: 'api/user',

@@ -1,4 +1,7 @@
-angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceController', ['$scope', '$http', '$compile', '$location', '$actionButton', function($scope, $http, $compile, $location, $actionButton) {
+angular
+	.module('PlaceCtrl', ['ionic', '$actionButton'])
+	.controller('PlaceController', ['$scope','$http', '$compile','$location', '$actionButton','Place', 'User', '$ionicSideMenuDelegate',
+			function($scope, $http, $compile, $location, $actionButton, Place, User, $ionicSideMenuDelegate) { 
 	var map;
 	var markers = [];
 	var newPlace;
@@ -8,9 +11,7 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 	var Dublin = new google.maps.LatLng(53.3484285,-6.2569559);
 	var Cork = new google.maps.LatLng(51.8983147,-8.4822781);
 	var Limerick = new google.maps.LatLng(52.6676852,-8.6366651);
-	var geocoder= new google.maps.Geocoder();
-	window.text = $scope
-	$scope.radius = 1000;
+	$scope.radius = 50;
 	$scope.markers =[];
 	$scope.newUnsavedPlace = null;
 	$scope.playgrounds =[];
@@ -23,8 +24,8 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 		lat: 0,
 		long: 0,
 		user: null
-	}
-	$scope.noRecs = false;
+	};
+	
 	$scope.education = ['aquarium', 'book_store','museum'];
 	$scope.indoorFun = ['bowling_alley','movie_theatre'];
 	$scope.food = ['bakery', 'cafe','restaurant'];
@@ -32,35 +33,26 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 	$scope.culture = ['art_gallery', 'library'];
 	$scope.goodToKnow = ['ATM', 'Bank','Gas_Station', 'taxi_stand', 'train_station', 'transit_station', 'post_office', 'pharmacy'];
 	$scope.ICE = ['police', 'hospital', 'doctor', 'dentist', 'embassy', 'car_repair'];
+	// combine list of all place sub types
 	$scope.allTypes =  $scope.education.concat( 
-			$scope.indoorFun.concat(
-				$scope.food.concat(
-					$scope.outdoors.concat(
-						$scope.culture.concat( 
-							$scope.goodToKnow.concat($scope.ICE)
-						)
+		$scope.indoorFun.concat(
+			$scope.food.concat(
+				$scope.outdoors.concat(
+					$scope.culture.concat( 
+						$scope.goodToKnow.concat($scope.ICE)
 					)
 				)
 			)
-		).sort(); 
+		)
+	).sort(); 
 
 	function initMap() {
-		console.log($scope.currentUser.location);
-		switch($scope.currentUser.location){
-			case "Galway":
-				$scope.initCenter = Galway;
-				break;
-			case "Cork":
-				$scope.initCenter = Cork
-				break;
-			case "Dublin":
-				$scope.initCenter = Dublin
-				break;
-			case "Limerick":
-				$scope.initCenter = Limerick
-				break;
-		}
-		map = new google.maps.Map(document.getElementById('map'), {
+		$scope.initCenter = Place.userLocationToLatLong($scope.currentUser)
+		var mapElement = document.getElementById('map')
+		if(mapElement == null)
+			return ;
+		console.log('mapp element is', mapElement);
+		map = new google.maps.Map(mapElement, {
 			center: $scope.initCenter,
 			zoom: 15,
 			zoomControl: true,
@@ -87,16 +79,22 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 	            map: map
           	});
 
-	        nPData.setContent($compile(document.getElementById('newData').innerHTML)($scope)[0]);
+	        nPData.setContent(
+	        	$compile(document.getElementById('newData').innerHTML)($scope)[0]
+	        );
 	        $scope.newPlace.lat = $scope.newUnsavedPlace.position.lat();
 	        $scope.newPlace.long = $scope.newUnsavedPlace.position.lng();
 	        $scope.$apply();
-	        // open new place popup form right away on the first click
+	        // open new place popup form
 	        nPData.open(map, $scope.newUnsavedPlace);
 		});
-	}	
+	};	
+
 // var clearMarker = document.getElementById("clearMarkers");
 // 	clearMarker.addEventListener("click", removeMarkers, false);
+	$scope.centerMap =function(location){
+		map.setCenter(location);
+	};
 	$scope.search = function(input){
 		var sType = $scope[input];
 		console.log('searching for '+ input);
@@ -107,30 +105,100 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 			service.nearbySearch({
 				location: map.getCenter(),
 				radius: $scope.radius,
-				type: [type]
-			}, callback.bind(input));
+				type: [type],
+			}, searchCallback.bind(input));
 		}
 	};
 
 	$scope.addPlace = function(){
-		console.log('submiting new place');
-		console.log($scope.newPlace);
-		// reset $scope.newPlace after success
-		$http.post('/addPlace', $scope.newPlace).then(function(success){
-			console.log('success', success)
-			createMarkerFromCustomPlace(success.data);
-			// reset form
-			$scope.newPlace.name = '';
-			$scope.newPlace.type = '';
-			$scope.newPlace.address = '';
+		Place.addPlace($scope.newPlace, function(place){
+			Place.createMarkerFromCustomPlace(map,place);
+			resetNewPlaceForm()
 			nPData.close();
-			//$scope.newUnsavedPlace.setMap(null);
-			$scope.newUnsavedPlace = null;
-		},function(error){
-			console.log('error', error)
+		});
+	};
+
+	function resetNewPlaceForm(){
+		$scope.newPlace.name = '';
+		$scope.newPlace.type = '';
+		$scope.newPlace.address = '';
+		$scope.newUnsavedPlace = null;
+	};
+		
+	function searchCallback(results, status, pagination) {
+		var type = this.toString();
+		console.log("trggering searchCallback for place of type: ",type);
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+			for (var i = 0; i < results.length; i++) {
+				createMarker(results[i]);
+			}
+		}
+		if (pagination.hasNextPage) {
+			console.log('loading next page of results for radius' + $scope.radius);
+			pagination.nextPage();
+		} 
+	}
+
+	function createMarker(place) {
+		var type = (place.types[0]).replace("_"," ");
+
+		var marker = new google.maps.Marker({
+			map: map,
+			position: place.geometry.location,
+		});
+
+		marker.place = place;
+		markers.push(marker);
+		var placeRating;
+		if(place.price_level == undefined){
+			place.price_level = " No Information Available";
+		}
+
+		if(place.rating == undefined && place.beaconRating !== undefined){
+			placeRating = "Beacon Rating: " + place.beaconRating;
+		} else if (place.rating !== undefined && place.beaconRating == undefined){
+			placeRating = "Google Rating: " + place.rating + " Stars";
+		} else if (place.rating == undefined && place.beaconRating == undefined){
+			placeRating = " ";
+		}
+		
+		google.maps.event.addListener(marker, 'click', function() {
+			content = 
+				'<div>'+
+					'<h3>' + place.name + '</h3>'+ 
+					'<p> Type: ' +  type + '</p>' +
+					'<p> This Address: ' + place.vicinity + '</p>' +
+					'<p>' + placeRating + '</p>' +
+					'<p> Price Level' + place.price_level + '</p>' + 
+					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
+					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
+				'</div>';
+
+			infowindow.setContent( $compile(content)($scope)[0] )
+			infowindow.open(map, this);
 		});
 	}
-	
+
+		$scope.upvote = function(place){
+		console.log('Upvote place', place);
+		$http.post('/upvote', {place: place}).then(function(success){
+			console.log('upvoted!');
+		})
+	}
+	$scope.logout = function(){
+		$http.get('/api/logout').then(function(success){
+			// refreshing will bring the user to the login page
+			location.href="/"
+		});
+	}
+
+	$scope.downvote = function(place){
+		console.log('Downvote place', place);
+		$http.post('/downvote', {place: place}).then(function(success){
+			console.log('downvoted!');
+		})
+	}
+
 	$scope.recommend = function(){
 		$http.get('/recommendations').then(function(response){
 			console.log(response);
@@ -139,21 +207,21 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 			$scope.recs = {};
 			if (places && places.length > 0){
 	            for(i=0;i<places.length;i++){
-					createMarkerFromCustomPlace(places[i]);
+					Place.createMarkerFromCustomPlace(map, places[i]);
 				}
 			}
 			console.log(recommendations.length);
 			if (recommendations.length>0){
 				for(i=0;i<recommendations.length;i++){
 					var id = recommendations[i];
-					$scope.recs[id] = null
+					$scope.recs[id] = null;
 					if(id.length > 6){
 						// google id
 				        service.getDetails({placeId: id}, function(place, status) {
 				          if (status === google.maps.places.PlacesServiceStatus.OK) {
 				            createMarker(place);
-				            console.log('created marker for ', id, place.place_id )
-				            console.log('which points to ', $scope.recs[place.place_id] )
+				            console.log('created marker for ', id, place.place_id );
+				            console.log('which points to ', $scope.recs[place.place_id]	 );
 				            $scope.recs[place.place_id] = place;
 				            $scope.$apply();
 				          }
@@ -162,7 +230,7 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 					} else {
 						// custom place id
 						console.log(id + " is a local id, need to fetch place data");
-						var place = null
+						var place = null;
 			            for(i=0;i<places.length;i++){
 			            	if(places[i].id == id){
 				            	place = places[i];
@@ -185,139 +253,39 @@ angular.module('PlaceCtrl',['ionic', '$actionButton']).controller('PlaceControll
 		});
 	}
 
-	function callback(results, status, pagination) {
-		var type = this.toString();
-		console.log("trggering callback for place of type: ",type);
-		if (status === google.maps.places.PlacesServiceStatus.OK) {
-			for (var i = 0; i < results.length; i++) {
-				createMarker(results[i]);
-			}
-		}
-		if (pagination.hasNextPage) {
-			console.log('loading next page of results for radius' + $scope.radius);
-			pagination.nextPage();
-		} 
-	}
 
-	function createMarker(place) {
-		var type = (place.types[0]).replace("_"," ");
-		// if ($.inArray(place.types[0], $scope.education) > -1){
-		// 	console.log('education');
-		// }
-		// if ($.inArray(place.types[0], $scope.indoorFun) > -1){
-		// 	console.log('indoorFun');
-		// }
-		// if ($.inArray(place.types[0], $scope.outdoors) > -1){
-		// 	console.log('outdoorFun');
-		// }
-		// if ($.inArray(place.types[0], $scope.ICE) > -1){
-		// 	console.log('ICE');
-		// }
-		// if ($.inArray(place.types[0], $scope.culture) > -1){
-		// 	console.log('culture');
-		// }
-		// if ($.inArray(place.types[0], $scope.goodToKnow) > -1){
-		// 	console.log('goodToKnow');
-		// }
-
-		var marker = new google.maps.Marker({
-			map: map,
-			position: place.geometry.location,
-			//map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
-		});
-
-		marker.place = place;
-		markers.push(marker);
-		var placeRating;
-		if(place.price_level == undefined){
-			place.price_level = " No Information Available";
-		}
-
-		if(place.rating == undefined && place.beaconRating !== undefined){
-			placeRating = "Beacon Rating: " + place.beaconRating;
-		} else if (place.rating !== undefined && place.beaconRating == undefined){
-			placeRating = "Google Rating: " + place.rating + " Stars";
-		} else if (place.rating == undefined && place.beaconRating == undefined){
-			placeRating = " ";
-		}
-		console.log(place);
-		console.log('place')
-		if ($scope.custAddress==undefined){
-			$scope.custAddress = '';
-		} 
-
-		google.maps.event.addListener(marker, 'click', function() {
-			content = 
-				'<div>'+
-					'<h3>' + place.name + '</h3>'+ 
-					'<p> Type: ' +  type + '</p>' +
-					'<p> This Address: ' +  $scope.custAddress + place.vicinity + '</p>' +
-					'<p>' + placeRating + '</p>' +
-					'<p> Price Level' + place.price_level + '</p>' + 
-					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
-					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
-				'</div>';
-
-			infowindow.setContent( $compile(content)($scope)[0] )
-			infowindow.open(map, this);
-			$scope.custAddress = '';
-		});
-	}
-
-	function createMarkerFromCustomPlace(customPlace){
-		console.log("adding custom place:", customPlace)
-		var loc = new google.maps.LatLng(customPlace.lat, customPlace.long);
-		var dist = google.maps.geometry.spherical.computeDistanceBetween(map.getCenter(),loc);
-		$scope.custAddress = customPlace.address;
-		geocodePosition(loc);
-		if (dist<=$scope.radius){
-			createMarker({
-				custom: true,
-				place_id: customPlace.id,
-				types: [customPlace.type],
-				beaconRating: customPlace.beaconRating,
-				name: customPlace.name,
-				vicinity: $scope.custAddress,
-				geometry: {
-					location: loc
-				}
-			});	
+	createMarkerFromCustomPlace = function(customPlace){
+		var location = new google.maps.LatLng(customPlace.lat, customPlace.long);
+		var dist = google.maps.geometry.spherical.computeDistanceBetween(
+			map.getCenter(),
+			location);
+		if (dist <= $scope.radius){
+			Place.geocodePosition(customPlace, function(address){	
+				createMarker({
+					custom: true,
+					place_id: customPlace.id,
+					types: [customPlace.type],
+					beaconRating: customPlace.beaconRating,
+					name: customPlace.name,
+					vicinity: address,
+					geometry: {
+						location: location
+					}
+				});	
+			});
 		}	
 	}
 
-function geocodePosition(pos) {
-  geocoder.geocode({
-		latLng: pos
-	}, function(responses) {
-		if (responses && responses.length > 0) {
-	    	console.log(responses);
-	    	console.log('a-ok');
-	    	$scope.custAddress = responses[0].formatted_address;
-	    	console.log($scope.custAddress);
-		} else {
-		    $scope.custAddress = 'Error here';
-		    console.log('heuston has a problem');
-		}
-	});
-}
 
-$http.get('/fetchPlaces')
-		.then(function (data){
-			var places = data.data;
-			console.log("fetched " + places.length +" custom places from the server");
-            for(i=0;i<places.length;i++){
-        		createMarkerFromCustomPlace(places[i]);
-        		console.log(places[i].id);
-            }
+	User.fetchLoggedInUser(function(user){
+		console.log('init place  ctrl after fetching user')
+		$scope.currentUser = user;
+		initMap();
+		Place.fetchPlaces(createMarkerFromCustomPlace);
+	})
 
-		},function (error){
-			console.log(error);
-		});
 
-//Do the things!
-	initMap();
-	// map.addListener("bounds_changed",$scope.search,false);
-	console.log("$actionButton", $actionButton);
+	// android style action / fab button in bottom right corner
 	$actionButton.create({
 	    mainAction: {
 	      icon: 'ion-gear-b',
@@ -344,9 +312,10 @@ $http.get('/fetchPlaces')
 	    }, {
 	      label: 'Recommendations',
 	      onClick: function() {
+	      	$scope.recommend();
 	        console.log('clicked Recommendations');
+			$ionicSideMenuDelegate.toggleRight();
 	      }
 	    }]
-	  });
-	  
+	});
 }]);

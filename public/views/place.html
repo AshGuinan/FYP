@@ -24,7 +24,9 @@
             </div>
         </div>
 </ion-header-bar>
-<ion-content scroll="false">
+<ion-header-bar align-title="left" class="bar-subheader bar-positive"><span>Search Radius [meters]:</span> <input type="text" name="radius" ng-model="radius"> </ion-header-bar>
+<ion-side-menus>
+    <ion-side-menu-content scroll="false">
         <div id="map"></div>
 
     	<div ng-if="isAdmin">
@@ -37,7 +39,42 @@
     		  <button ng-click="verify(place.id)">Verify Me! </button> 
     		</div>
     	</div>
-    </ion-content>
+    </ion-side-menu-content>
+
+
+    <ion-side-menu side="right" scroll="true">
+        <h2>
+            Recommendations
+        </h2>
+        <div ng-if="noRecs">
+                Looks like we don't have any suggestions for you yet.
+                Try liking some of the results on the map!
+        </div>
+        <div ng-repeat="(id,place) in recs track by $index">
+            <div class="card" ng-click="centerMap(place.geometry.location)">
+                <h3>
+                    {{place.name}}
+                </h3>
+                <p>
+                    Type: {{place.types[0]}}
+                </p>
+                <p>
+                    Type: {{place.vicinity}},
+                </p>
+                <p>
+                    Google Rating: {{place.rating}}
+                </p>
+                <p>
+                    Beacon Rating: {{place.beaconRating}}
+                </p>
+                <p>
+                    Price Level: {{place.price_level}}
+                </p>
+            </div>
+        </div>
+    </ion-side-menu>
+</ion-side-menus>
+
 <div id="newData" hidden="true">
 	<form ng-submit="addPlace()">
       <div class="form-group">
@@ -61,3 +98,4 @@
     	</div>
 		<button type="submit">Add!</button>
     </form>
+</div>

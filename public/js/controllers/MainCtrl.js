@@ -1,4 +1,14 @@
-angular.module('MainCtrl', ['ionic']).controller('MainController', ['$scope', '$rootScope', '$http', '$compile', function($scope, $rootScope, $http, $compile) {
+angular
+.module('MainCtrl', ['ionic'])
+.controller('MainController', 
+	[
+		'$scope', 
+		'$rootScope', 
+		'$http', 
+		'$compile',
+		'User', 
+		function($scope, $rootScope, $http, $compile, User) {
+	
 	//$scope.user = 'Welcome!';
 	$rootScope.latlong;
 
@@ -11,30 +21,6 @@ angular.module('MainCtrl', ['ionic']).controller('MainController', ['$scope', '$
 	// 		markers[i].setMap(null);
 	// 	}
 	// }
-
-	$http.get('/me')
-		.then(function (success){
-			console.log("success getting user from /me endpoint", success);
-            if(success.data.userName!==""){
-                $rootScope.user = success.data.userName;
-                $scope.isAdmin = success.data.verified;
-                $scope.currentUser = success.data;
-                console.log($scope.currentUser);
-            }
-			console.log($rootScope.user);
-			console.log($scope.isAdmin);
-			console.log("Success: "+success);
-		},function (error){
-			console.log("error: " + error);
-		});
-
-	$http.get('/fetchAllPlaces')
-		.then(function (data){
-			$scope.allPlaces = data.data;
-			console.log('Success fetching places');
-		},function (error){
-			console.log('Fail');
-		});
 
 	$scope.upvote = function(place){
 		console.log('Upvote place', place);
