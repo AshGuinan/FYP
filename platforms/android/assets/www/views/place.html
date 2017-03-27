@@ -1,0 +1,102 @@
+<ion-header-bar id="filters" align-title="left" class="bar-positive">
+        <div class="row">
+            <div class="col" ng-class="{selected: activeTypes.indexOf('education') > 0}">
+                <i class="icon ion-university" ng-click="search('education')" 
+></i>
+            </div>   
+            <div class="col" ng-class="{selected: isActive('outdoors')}">
+                <i class="icon ion-leaf" ng-click="search('outdoors')"></i>
+            </div> 
+            <div class="col" ng-class="{selected: isActive('indoorFun')}">
+                <i class="icon ion-happy" ng-click="search('indoorFun')"></i>
+            </div>
+            <div class="col" ng-click="search('food')" ng-class="{selected: isActive('food')}">
+                <i class="icon ion-fork" ></i>
+                <i class="icon ion-knife" ></i>
+           </div>
+            <div class="col" ng-class="{selected: isActive('culture')}">
+                <i class="icon ion-paintbrush" ng-click="search('culture')" ></i>
+            </div>
+            <div class="col" ng-class="{selected: isActive('goodToKnow')}">
+                <i class="icon ion-information-circled" ng-click="search('goodToKnow')" ></i>
+           </div>
+            <div class="col" ng-class="{selected: isActive('ICE')}">
+                <i class="icon ion-help-buoy" ng-click="search('ICE')" ></i>
+            </div>
+        </div>
+</ion-header-bar>
+<ion-header-bar align-title="left" class="bar-subheader bar-positive"><span>Search Radius [meters]:</span> <input type="text" name="radius" ng-model="radius"> </ion-header-bar>
+<ion-side-menus>
+    <ion-side-menu-content scroll="false">
+        <div id="map"></div>
+
+    	<div ng-if="isAdmin">
+    		<div ng-repeat="place in allPlaces track by $index">
+    		  {{place.name}},
+    		  {{place.address}},
+    		  {{place.type}},
+    		  {{place.user}},
+    		  {{place.verified}}
+    		  <button ng-click="verify(place.id)">Verify Me! </button> 
+    		</div>
+    	</div>
+    </ion-side-menu-content>
+
+
+    <ion-side-menu side="right" scroll="true">
+        <h2>
+            Recommendations
+        </h2>
+        <div ng-if="noRecs">
+                Looks like we don't have any suggestions for you yet.
+                Try liking some of the results on the map!
+        </div>
+        <div ng-repeat="(id,place) in recs track by $index">
+            <div class="card" ng-click="centerMap(place.geometry.location)">
+                <h3>
+                    {{place.name}}
+                </h3>
+                <p>
+                    Type: {{place.types[0]}}
+                </p>
+                <p>
+                    Type: {{place.vicinity}},
+                </p>
+                <p>
+                    Google Rating: {{place.rating}}
+                </p>
+                <p>
+                    Beacon Rating: {{place.beaconRating}}
+                </p>
+                <p>
+                    Price Level: {{place.price_level}}
+                </p>
+            </div>
+        </div>
+    </ion-side-menu>
+</ion-side-menus>
+
+<div id="newData" hidden="true">
+	<form ng-submit="addPlace()">
+      <div class="form-group">
+	        <label>Name</label>
+	        <input type="text" class="form-control" placeholder="name" name="name" ng-model="newPlace.name">
+    	</div>
+   		<div class="form-group">
+        	<label>Type</label>
+            <select ng-model="newPlace.type" ng-options="o as o for o in allTypes">
+            </select>
+    	</div>
+    	<div class="form-group">
+        	<label>Price</label>
+        	<select ng-model="newPlace.price_level">
+             <option value="0">Free</option>   
+             <option value="1">Inexpensive</option>   
+             <option value="2">Moderate</option>   
+             <option value="3">Expensive</option>   
+             <option value="4">Very Expensive</option>   
+            </select>
+    	</div>
+		<button type="submit">Add!</button>
+    </form>
+</div>

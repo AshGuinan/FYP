@@ -1,0 +1,26 @@
+{
+  "name": "FYP",
+  "main": "server.js",
+  "dependencies": {
+    "angular-google-maps": "^2.4.0",
+    "body-parser": "~1.4.2",
+    "cheerio": "^0.22.0",
+    "cookie-parser": "1.4.3",
+    "express": "~4.5.1",
+    "express-session": "~1.14.2",
+    "method-override": "~2.0.2",
+    "morgan": "~1.7.0",
+    "mysql": "^2.12.0",
+    "request": "^2.79.0",
+    "sequelize": "^3.30.2",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "angular": "^1.6.2",
+    "angular-google-maps": "^2.4.0",
+    "bcrypt-nodejs": "0.0.3",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "underscore": "^1.8.3"
+  }
+}

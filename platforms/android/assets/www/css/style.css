@@ -1,0 +1,49 @@
+body { padding-top:30px; }
+#map {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+.row{
+	margin-left:5%;
+	margin-right: 5%;
+}
+
+.action-button-small {
+	display: none !important;
+}
+.action-button-small--label {
+	margin: 5px 20px !important;
+}
+.action-button-small-container {
+	padding-right: 0px !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    top:0;
+}
+.row a {
+	color: white;
+	/*margin-left: 12.5px;*/
+}
+.col{
+	text-align: center;
+}
+.col i {
+	font-size: 120%;
+}
+.col.selected i {
+	color:red;
+	font-size: 140%;
+}
+
+ion-side-menu {
+	overflow-y: auto !important;
+	padding-top:50px !important;
+}
+
+.map-icon-label .map-icon {
+	font-size: 24px;
+	color: #FFFFFF;
+	line-height: 48px;
+	text-align: center;
+	white-space: nowrap;
+}

@@ -1,0 +1,42 @@
+<ion-header-bar>
+<h1>
+    Beacon App - Login or Signup
+</h1>
+</ion-header-bar>
+    
+<ion-content>
+
+    <h2>
+        Log in
+    </h2>
+    <form action="http://88.99.186.61:8080/login" method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" placeholder="user name" name="userName" ngModel="user.userName">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" placeholder="password" name="password" ngModel="user.userName">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Login</button>
+    </form>
+
+    <hr>
+
+    <h2>
+        Signup
+    </h2>
+
+    <form action="http://88.99.186.61:8080/sign-up" method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" placeholder="user name" name="userName" ngModel="user.userName">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" placeholder="password" name="password" ngModel="user.userName">
+        </div>
+        <button type="submit" class="btn btn-warning btn-lg">Signup</button>
+    </form>
+</ion-content>
