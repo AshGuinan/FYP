@@ -13,7 +13,6 @@ var passport = require('passport');
 var User = require('./app/models/User');
 var Place = require('./app/models/Place');
 var Ratings = require('./app/models/Rating');
-var config = require('./config.js');
 // configuration ===========================================
 // sequelize = new Sequelize('mysql://mochacat:8b2z929v@beacon-1.coigew9zt5yh.eu-west-1.rds.amazonaws.com:3306/beacon');
 sequelize = new Sequelize('mysql://root:63a283356d2003ba85f5ceb8fcfd2cE!@88.99.186.61:3306/beacon');
@@ -58,7 +57,7 @@ User.sync({}).then(function () {
 
 // routes ==================================================
 require('./app/routes')(app, passport, raccoon); // pass our application and passport config into our routes
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 80;
 
 // start app ===============================================
 app.listen(port, '0.0.0.0');	

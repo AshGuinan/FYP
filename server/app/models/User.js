@@ -1,7 +1,6 @@
 var Sequelize = require('sequelize');
 var DataTypes = require('sequelize/lib/data-types');
 var bcrypt = require("bcrypt-nodejs");
-var config = require('../../config.js');
 sequelize = new Sequelize('mysql://root:63a283356d2003ba85f5ceb8fcfd2cE!@88.99.186.61:3306/beacon');
 
 console.log("about to define the user");

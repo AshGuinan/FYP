@@ -7,23 +7,25 @@ module.exports = function(app, passport, raccoon) {
 	// handle things like api calls
 	// authentication routes
 	app.all("*", function(req,res,next){
+        console.log("request", req.body)
 		next()
 	});
 	// frontend routes =========================================================
 	// route to handle all angular requests
-    app.post('/sign-up',
-		passport.authenticate('local-signup', {
-			successRedirect : '/', // redirect to the secure profile section
-			failureRedirect : '/fail' // redirect back to the signup page if there is an error
-		})
+    app.post('/api/signup',
+		passport.authenticate('local-signup',{}), 
+        function(req,res){
+            res.send(req.user);
+		}
 	);
 
-	app.post('/login',
-		passport.authenticate('local-login', { failureRedirect: '/fail' }),
+	app.post('/api/login',
+		passport.authenticate('local-login', {}),
 		function(req, res) {
-			res.redirect('/places');
+            res.send(req.user);
             console.log('User: '+req.user.userName);
-		});   
+		}
+    );   
 
     app.get('/api/logout',
         function(req, res){
@@ -174,18 +176,14 @@ module.exports = function(app, passport, raccoon) {
         console.log('updateDetails')
         console.log(req.body)
         console.log(req.user.userName,req.user.id)
-        //only update 
-        updatedUserData = {
-
-        }
         req.user.updateAttributes({
             budget: req.body.budget,
             numChildren: req.body.numChildren,
             ageChildren: req.body.ageChildren,
             activityType: req.body.activityType,
             location: req.body.location 
-        }).then(function () {
-            res.redirect('/places');
+        }).then(function (user) {
+            res.send(user);
         })
     });
 
