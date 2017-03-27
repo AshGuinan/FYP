@@ -244,20 +244,20 @@ angular
 
 		$scope.upvote = function(place){
 		console.log('Upvote place', place);
-		$http.post('http://88.99.186.61:8080/upvote', {place: place}).then(function(success){
+		$http.post(SERVER_ROOT + 'upvote', {place: place}).then(function(success){
 			console.log('upvoted!');
 		})
 	};
 
 	$scope.downvote = function(place){
 		console.log('Downvote place', place);
-		$http.post('http://88.99.186.61:8080/downvote', {place: place}).then(function(success){
+		$http.post(SERVER_ROOT + 'downvote', {place: place}).then(function(success){
 			console.log('downvoted!');
 		})
 	}
 
 	$scope.recommend = function(){
-		$http.get('http://88.99.186.61:8080/recommendations').then(function(response){
+		$http.get(SERVER_ROOT + 'recommendations').then(function(response){
 			console.log(response);
 			var places = response.data.localplaces; 
 			var recommendations = response.data.recommendations; 

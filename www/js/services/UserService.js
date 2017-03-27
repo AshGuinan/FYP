@@ -1,12 +1,12 @@
 angular
 	.module('UserService', [])
-	.factory('User', ['$http', '$route', function($http, $route) {
+	.factory('User', ['$http', '$route', '$location', function($http, $route, $location) {
 
 	User = {};
 
 
 	User.fetchLoggedInUser = function(callback){
-		$http.get('http://88.99.186.61:8080/me').then(
+		$http.get(SERVER_ROOT + 'me').then(
 			function (success){
 				console.log("success getting user from /me endpoint", success);
 	            if( typeof success.data == 'object' && success.data.userName !== ""){
@@ -21,12 +21,21 @@ angular
 		});
 	};
 
+	User.updateUserDetails = function(data, callback){
+		$http
+			.post(SERVER_ROOT + 'updateDetails')
+			.then(function(response){
+				console.log('updated user details', response);
+				callback(response.date);
+			})
+	}
+
 	User.verify = function(id){
 		console.log(id);
 		if($scope.isAdmin){
 			var data = {placeId:id};
 			console.log('Hai thar');
-			$http.post('http://88.99.186.61:8080/verify', data).then(function (data){
+			$http.post(SERVER_ROOT + 'verify', data).then(function (data){
 				console.log('verifying...');
 			},function (error){
 				console.log(error);
@@ -39,25 +48,28 @@ angular
 
 	User.logout = function(){
 		console.log('logging out...');
-		$http.get('http://88.99.186.61:8080/api/logout').then(function(success){
+		$http.get(SERVER_ROOT + 'api/logout').then(function(success){
 			console.log('logged out');
-			window.location.reload(false); 
-
+			$location.path('/');
 		});      
 	}
 
 	User.login = function(user, callback){
-		console.log('logging out...');
+		console.log('login...');
 		$http
-			.post('http://88.99.186.61:8080/api/login')
-			.then(callback);      
+			.post(SERVER_ROOT + 'api/login', user)
+			.then(function(response){
+				callback(response.data)
+		});      
 	};
 
 	User.signup = function(user, callback){
-		console.log('logging out...');
+		console.log('signup...');
 		$http
-			.post('http://88.99.186.61:8080/api/signup')
-			.then(callback);      
+			.post(SERVER_ROOT + 'api/signup', user)
+			.then(function(response){
+				callback(response.data)
+		});      
 	};
 
 	return User;

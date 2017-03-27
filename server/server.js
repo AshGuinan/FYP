@@ -57,7 +57,7 @@ User.sync({}).then(function () {
 
 // routes ==================================================
 require('./app/routes')(app, passport, raccoon); // pass our application and passport config into our routes
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 8080;
 
 // start app ===============================================
 app.listen(port, '0.0.0.0');	

@@ -244,7 +244,7 @@ module.exports = function(app, passport, raccoon) {
         }
         else {
             // if they aren't redirect them to the home page
-            res.sendfile('./public/views/user.html');
+            res.send(null);
             console.log('not logged in');
         }
     }

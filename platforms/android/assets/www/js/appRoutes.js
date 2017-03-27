@@ -3,8 +3,8 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 	$routeProvider
 		// home page
 		.when('/', {
-			templateUrl: 'views/home.html',
-			controller: 'PlaceController'
+			templateUrl: 'views/login.html',
+			controller: 'LoginController'
 		})
 		.when('/user', {
 			templateUrl: 'views/user.html',
@@ -15,7 +15,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'UserController'
 		})
 		.when('/places', {
-			templateUrl: 'views/places.html',
+			templateUrl: 'views/place.html',
 			controller: 'PlaceController'
 		});
 

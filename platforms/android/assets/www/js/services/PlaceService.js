@@ -20,7 +20,7 @@ angular
 	}
 
 	Place.fetchPlaces = function(callback){	
-		$http.get('http://88.99.186.61:8080/fetchPlaces').then(
+		$http.get(SERVER_ROOT + 'fetchPlaces').then(
 			function (data){
 				var places = data.data;
 				for(i=0;i<places.length;i++){
@@ -32,7 +32,7 @@ angular
 	};
 
 	Place.fetchAllPlaces = function(callback){
-		$http.get('http://88.99.186.61:8080/fetchAllPlaces').then(
+		$http.get(SERVER_ROOT + 'fetchAllPlaces').then(
 			function (data){
 				var places = data.data;
 	            for(i=0;i<places.length;i++){
@@ -45,7 +45,7 @@ angular
 	}
 
 	Place.addPlace = function(newPlace,callback){
-		$http.post('http://88.99.186.61:8080/addPlace', newPlace).then(
+		$http.post(SERVER_ROOT + 'addPlace', newPlace).then(
 			function(success){
 				callback(success);
 			},function(error){

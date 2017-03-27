@@ -1,6 +1,6 @@
-<ion-header-bar>
+<ion-header-bar align-title="left" class="bar-positive">
 <h1>
-    Beacon App - Login or Signup
+    BeaconApp
 </h1>
 </ion-header-bar>
     
@@ -9,17 +9,17 @@
     <h2>
         Log in
     </h2>
-    <form action="http://88.99.186.61:8080/login" method="post">
+    <form>
         <div class="form-group">
             <label>Username</label>
-            <input type="text" class="form-control" placeholder="user name" name="userName">
+            <input type="text" class="form-control" placeholder="user name" name="userName" ng-model="user.userName">
         </div>
         <div class="form-group">
             <label>Password</label>
-            <input type="password" class="form-control" placeholder="password" name="password">
+            <input type="password" class="form-control" placeholder="password" name="password" ng-model="user.password">
         </div>
 
-        <button type="submit" class="btn btn-warning btn-lg">Login</button>
+        <button type="submit" class="btn btn-warning btn-lg" ng-click="login()">Login</button>
     </form>
 
     <hr>
@@ -28,15 +28,15 @@
         Signup
     </h2>
 
-    <form action="http://88.99.186.61:8080/sign-up" method="post">
+    <form>
         <div class="form-group">
             <label>Username</label>
-            <input type="text" class="form-control" placeholder="user name" name="userName">
+            <input type="text" class="form-control" placeholder="user name" name="userName" ng-model="user.userName">
         </div>
         <div class="form-group">
             <label>Password</label>
-            <input type="password" class="form-control" placeholder="password" name="password">
+            <input type="password" class="form-control" placeholder="password" name="password" ng-model="user.password">
         </div>
-        <button type="submit" class="btn btn-warning btn-lg">Signup</button>
+        <button type="submit" class="btn btn-warning btn-lg" ng-click="signup()">Signup</button>
     </form>
 </ion-content>

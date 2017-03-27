@@ -15,7 +15,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'UserController'
 		})
 		.when('/places', {
-			templateUrl: 'views/places.html',
+			templateUrl: 'views/place.html',
 			controller: 'PlaceController'
 		});
 
