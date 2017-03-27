@@ -91,7 +91,7 @@ angular
 		infowindow = new google.maps.InfoWindow();
 		service = new google.maps.places.PlacesService(map);
 		
-		google.maps.event.addListener(map, 'click', function(event){
+		google.maps.event.addListener(map, 'dblclick', function(event){
 			if($scope.newUnsavedPlace != null) {
 				$scope.newUnsavedPlace.setMap(null)
 			}
@@ -100,6 +100,7 @@ angular
 	            position: event.latLng,
 	            map: map
           	});
+			map.setCenter(event.latLng);
 
 	        nPData.setContent(
 	        	$compile(document.getElementById('newData').innerHTML)($scope)[0]

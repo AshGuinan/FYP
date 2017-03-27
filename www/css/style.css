@@ -1,7 +1,9 @@
 body { padding-top:30px; }
 #map {
-    height: 100vh;
+	position:fixed !important;
+    height: 88vh;
     width: 100%;
+    bottom:0px;
     overflow: hidden;
 }
 .row{
