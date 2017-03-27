@@ -77,8 +77,7 @@ angular
 
 			$scope.newUnsavedPlace = new google.maps.Marker({
 	            position: event.latLng,
-	            map: map,
-	            label : 'A'
+	            map: map
           	});
 
 	        nPData.setContent(
