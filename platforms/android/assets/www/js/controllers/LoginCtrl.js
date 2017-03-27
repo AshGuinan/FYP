@@ -14,6 +14,7 @@ angular
 		userName: '',
 		password: ''
 	};
+	$scope.showLoginForm = true;
 
 	$scope.login = function(){
 		console.log('login', $scope.user)
@@ -37,5 +38,11 @@ angular
 			}
 		})
 	};
+
+	User.fetchLoggedInUser(function(user){
+		if(user != null){
+			$location.path('/places');
+		}
+	});
 
 }]);

@@ -56,7 +56,16 @@ angular
 				return superType;
 			}
 		}
-
+		return null;
+	};
+	function typeFromSubTypes(subTypes){
+		for(var i = 0; i < subTypes.length; i++){
+			var type = typeFromSubType(subTypes[i]);
+			if(type != null){
+				return type
+			}
+		}
+		return null
 	};
 
 	function initMap() {
@@ -82,7 +91,7 @@ angular
 		infowindow = new google.maps.InfoWindow();
 		service = new google.maps.places.PlacesService(map);
 		
-		google.maps.event.addListener(map, 'click', function(event){
+		google.maps.event.addListener(map, 'dblclick', function(event){
 			if($scope.newUnsavedPlace != null) {
 				$scope.newUnsavedPlace.setMap(null)
 			}
@@ -91,6 +100,7 @@ angular
 	            position: event.latLng,
 	            map: map
           	});
+			map.setCenter(event.latLng);
 
 	        nPData.setContent(
 	        	$compile(document.getElementById('newData').innerHTML)($scope)[0]
@@ -186,27 +196,30 @@ angular
 		var iconLabel = '';	
 		switch(place.type){
 			case 'education':
-				iconLabel = '<span class="map-icon icon ion-university"></span>';
+				iconLabel = 'ion-university';
 				break;
 			case 'outdoors':
-				iconLabel = '<span class="map-icon icon ion-leaf"></span>';
+				iconLabel = 'ion-leaf';
 				break;
 			case 'indoorFun':
-				iconLabel = '<span class="map-icon icon ion-happy"></span>';
+				iconLabel = 'ion-happy';
 				break;
 			case 'food':
-				iconLabel = '<span class="map-icon icon ion-fork"></span>';
+				iconLabel = 'ion-fork';
 				break;
 			case 'culture':
-				iconLabel = '<span class="map-icon icon ion-paintbrush"></span>';
+				iconLabel = 'ion-paintbrush';
 				break;
 			case 'goodToKnow':
-				iconLabel = '<span class="map-icon icon ion-help-buoy"></span>';
+				iconLabel = 'ion-information-circled';
 				break;
 			case 'ICE':
-				iconLabel = '<span class="map-icon icon ion-information-circled"></span>';
+				iconLabel = 'ion-help-buoy';
 				break;
 
+		}
+		if(place.recommended){
+			iconLabel += " recommended";
 		}
 		console.log(iconLabel);
 		var marker = new Marker({
@@ -214,12 +227,12 @@ angular
 			position: place.geometry.location,
 			icon: {
 				path: SQUARE_PIN,
-				fillColor: '#00CCBB',
-				fillOpacity: 1,
+				fillColor: 'black',
+				fillOpacity: 0,
 				strokeColor: '',
 				strokeWeight: 0
 			},
-			map_icon_label: iconLabel
+			map_icon_label: '<span class="map-icon icon ' + iconLabel + '"></span>'
 		});
 
 		marker.place = place;
@@ -236,7 +249,8 @@ angular
 		} else if (place.rating == undefined && place.beaconRating == undefined){
 			placeRating = " ";
 		}
-		
+		lat = place.geometry.location.lat();
+		long = place.geometry.location.lng();
 		google.maps.event.addListener(marker, 'click', function() {
 			content = 
 				'<div>'+
@@ -247,6 +261,7 @@ angular
 					'<p> Price Level' + place.price_level + '</p>' + 
 					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
 					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
+					'<a href="geo:'+lat+','+long+'?q='+lat+','+long+'('+place.name+')") class="ion-ios-navigate"> Take me there! </a>' +
 				'</div>';
 
 			infowindow.setContent( $compile(content)($scope)[0] )
@@ -288,6 +303,9 @@ angular
 						// google id
 				        service.getDetails({placeId: id}, function(place, status) {
 				          if (status === google.maps.places.PlacesServiceStatus.OK) {
+				            place.recommended = true;
+				            place.type = typeFromSubTypes(place.types)
+				            console.log(place)
 				            createMarker(place);
 				            console.log('created marker for ', id, place.place_id );
 				            console.log('which points to ', $scope.recs[place.place_id]	 );
@@ -306,6 +324,7 @@ angular
 				            	break;
 			            	}
 			            }
+			            place.recommended = true;
 						$scope.recs[place.id] = {
 							place_id: place.id,
 							types: [place.type],

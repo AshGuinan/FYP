@@ -39,4 +39,10 @@ angular
 		})
 	};
 
+	User.fetchLoggedInUser(function(user){
+		if(user != null){
+			$location.path('/places');
+		}
+	});
+
 }]);

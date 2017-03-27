@@ -1,4 +1,4 @@
-angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '$http', '$location','Place', function($scope, $http, $location, Place) {
+angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '$http', '$location','Place', 'User', function($scope, $http, $location, Place, User) {
 	$scope.currentUser = {}
 
 	$scope.updateUserDetails = function(){
@@ -8,6 +8,9 @@ angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '
 			$location.path('/places');
 		})
 	};
+	$scope.goBack = function(){	
+		$location.path('/places');
+	}
 
 	User.fetchLoggedInUser(function(user){
 		if(user == null){

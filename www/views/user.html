@@ -1,4 +1,7 @@
 <ion-header-bar id="filters" align-title="left" class="bar-positive">
+    <a class="button icon-left ion-chevron-left button-clear" ng-click="goBack()">
+        Back
+    </a>
 
   <h1 class="title">Settings</h1>
 
@@ -10,6 +13,7 @@
 <ion-content>
     <form>
         <div class="form-group">
+
             {{currentUser.userName}}
             <input type="hidden" class="form-control" name="userName" value="{{currentUser.userName}}">
         </div>
@@ -56,6 +60,7 @@
                  <option value="culture">Culture</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-warning btn-lg" ng-click="updateUserDetails()">Update User Profile</button>
+        <button type="submit" class="button button-positive" ng-click="updateUserDetails()">Update User Profile</button>
+        <button type="submit" class="button button-assertive" ng-click="goBack()">cancel</button>
     </form>
 </ion-content>
