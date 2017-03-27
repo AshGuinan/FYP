@@ -4,7 +4,7 @@ angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '
 	$scope.updateUserDetails = function(){
 		console.log('updateUserDetails', $scope.currentUser)
 		User.updateUserDetails($scope.currentUser, function(user){
-			$scoep.currentUser = user;
+			$scope.currentUser = user;
 			$location.path('/places');
 		})
 	};

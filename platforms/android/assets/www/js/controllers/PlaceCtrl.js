@@ -11,7 +11,7 @@ angular
 	var Dublin = new google.maps.LatLng(53.3484285,-6.2569559);
 	var Cork = new google.maps.LatLng(51.8983147,-8.4822781);
 	var Limerick = new google.maps.LatLng(52.6676852,-8.6366651);
-	$scope.radius = 50;
+	$scope.radius = 2000;
 	$scope.markers =[];
 	$scope.newUnsavedPlace = null;
 	$scope.playgrounds =[];
@@ -26,7 +26,9 @@ angular
 		long: 0,
 		user: null
 	};
-	
+
+	var superTypes = ['education', 'indoorFun', 'food', 'outdoors', 
+		'culture', 'goodtoKnow', 'ICE'];
 	$scope.education = ['aquarium', 'book_store','museum'];
 	$scope.indoorFun = ['bowling_alley','museum', 'aquarium'];
 	$scope.food = ['bakery', 'cafe','restaurant'];
@@ -46,6 +48,16 @@ angular
 			)
 		)
 	).sort(); 
+
+	function typeFromSubType(subType){
+		for(var i = 0; i < superTypes.length; i++){
+			var superType = superTypes[i]
+			if($scope[superType].indexOf(subType) != -1){
+				return superType;
+			}
+		}
+
+	};
 
 	function initMap() {
 		$scope.initCenter = Place.userLocationToLatLong($scope.currentUser)
@@ -317,11 +329,13 @@ angular
 			map.getCenter(),
 			location);
 		if (dist <= $scope.radius){
+			console.log(typeFromSubType(customPlace.type));
 			Place.geocodePosition(customPlace, function(address){	
 				createMarker({
 					custom: true,
 					place_id: customPlace.id,
 					types: [customPlace.type],
+					type: typeFromSubType(customPlace.type),
 					beaconRating: customPlace.beaconRating,
 					name: customPlace.name,
 					vicinity: address,
@@ -335,8 +349,9 @@ angular
 
 
 	User.fetchLoggedInUser(function(user){
-		if(user == null)
-			return;
+		if(user == null){
+			return $location.path('/')
+		}
 		console.log('init place  ctrl after fetching user')
 		$scope.currentUser = user;
 		initMap();

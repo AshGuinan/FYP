@@ -10,8 +10,10 @@ angular
 			function (success){
 				console.log("success getting user from /me endpoint", success);
 	            if( typeof success.data == 'object' && success.data.userName !== ""){
+                	console.log('logged om')
 	                callback(success.data);
 	           	} else {
+                	console.log('null')
 	                callback(null);
 	           	}
 			},
@@ -23,7 +25,7 @@ angular
 
 	User.updateUserDetails = function(data, callback){
 		$http
-			.post(SERVER_ROOT + 'updateDetails')
+			.post(SERVER_ROOT + 'updateDetails', data)
 			.then(function(response){
 				console.log('updated user details', response);
 				callback(response.date);

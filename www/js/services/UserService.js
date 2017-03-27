@@ -25,7 +25,7 @@ angular
 
 	User.updateUserDetails = function(data, callback){
 		$http
-			.post(SERVER_ROOT + 'updateDetails')
+			.post(SERVER_ROOT + 'updateDetails', data)
 			.then(function(response){
 				console.log('updated user details', response);
 				callback(response.date);

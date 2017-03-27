@@ -1,42 +1,61 @@
-<ion-header-bar class="bar bar-header bar-positive">
-    <div class="row">
-        <div>
-             <a href="/places">Places</a>
-        </div>
-        <div>
-            <a href="/user">Profile</a>
-        </div>
-        <div>
-            <a ng-click="logout()">Logout</a>
-        </div>
-    </div>
+<ion-header-bar id="filters" align-title="left" class="bar-positive">
+
+  <h1 class="title">Settings</h1>
+
+  <ion-button class="button-clear">
+    <i class="ion-arrow-left-c"></i> Back
+  </ion-button>
 </ion-header-bar>
 
 <ion-content>
-        <form action="http://88.99.186.61:8080/login" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" class="form-control" placeholder="user name" name="userName">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" placeholder="password" name="password">
-            </div>
-
-            <button type="submit" class="btn btn-warning btn-lg">Login</button>
-        </form>
-<hr>
-    <h1>SIGN UP</h1>
-
-    <form action="http://88.99.186.61:8080/sign-up" method="post">
+    <form>
         <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" placeholder="user name" name="userName">
+            {{currentUser.userName}}
+            <input type="hidden" class="form-control" name="userName" value="{{currentUser.userName}}">
         </div>
         <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" placeholder="password" name="password">
+            <label>Location</label>
+            <select name="location" ng-model="currentUser.location">
+                <option value="Galway">Galway</option>
+                <option value="Dublin">Dublin</option>
+                <option value="Cork">Cork</option>
+                <option value="Limerick">Limerick</option>
+            </select>
         </div>
-        <button type="submit" class="btn btn-warning btn-lg">Signup</button>
+        <div class="form-group">
+            <label>Budget</label>
+<!--             <input type="text" class="form-control" name="budget" value="{{currentUser.budget}}"> -->
+            <select ng-model="currentUser.budget" name="budget">
+                 <option value="0">Free</option>   
+                 <option value="1">Inexpensive</option>   
+                 <option value="2">Moderate</option>   
+                 <option value="3">Expensive</option>   
+                 <option value="4">Very Expensive</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Ages of Children</label>
+<!--             <input type="text" class="form-control" name="ageChildren" value="{{currentUser.ageChildren}}"> -->
+            <select ng-model="currentUser.ageChildren" name="ageChildren">
+                 <option value="0">0-3</option>   
+                 <option value="1">4-6</option>   
+                 <option value="2">7-10</option>   
+                 <option value="3">11-13</option>   
+                 <option value="4">14+</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Activity Preference</label>
+            <!-- <input type="text" class="form-control" name="activityType" value="{{currentUser.activityType}}"> -->
+            <select ng-model="currentUser.activityType" name="activityType">
+                 <option value="education">Educational</option>   
+                 <option value="outdoors">Outdoor Activities</option>   
+                 <option value="indoorFun">Indoor Activities</option>   
+                 <option value="food">Places to Eat</option>   
+                 <option value="culture">Culture</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-warning btn-lg" ng-click="updateUserDetails()">Update User Profile</button>
     </form>
 </ion-content>
