@@ -10,8 +10,10 @@ angular
 			function (success){
 				console.log("success getting user from /me endpoint", success);
 	            if( typeof success.data == 'object' && success.data.userName !== ""){
+                	console.log('logged om')
 	                callback(success.data);
 	           	} else {
+                	console.log('null')
 	                callback(null);
 	           	}
 			},

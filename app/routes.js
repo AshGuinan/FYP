@@ -118,6 +118,7 @@ module.exports = function(app, passport, raccoon) {
             }
         })
         .then(function(data){
+            console.log("found some place", data)
             res.send(data);
         });
     });
@@ -246,6 +247,7 @@ module.exports = function(app, passport, raccoon) {
     }
 
     app.get('*', function(req, res) {
-		res.sendfile('./public/index.html');
+        console.log("sending back the server index")
+		res.sendfile('./www/index.html');
 	});
 };
