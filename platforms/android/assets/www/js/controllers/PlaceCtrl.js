@@ -78,7 +78,10 @@ angular
 				success.coords.latitude,
 				success.coords.longitude
 			);
-			var marker = new Marker({
+			if($scope.myMarker){
+				$scope.myMarker.setMap(null)
+			}
+			$scope.myMarker = new Marker({
 				map: map,
 				position: myLocation,
 				icon: {
@@ -88,12 +91,13 @@ angular
 					strokeColor: '',
 					strokeWeight: 0
 				},
-				map_icon_label: '<span class="me">'+
+				map_icon_label: '<span class="myMarker">'+
 									'<span class="map-icon icon ion-ios-body">' +
 									'</span>' +
-									'<span> me </span>' +
+									'<span class="me"> me </span>' +
 								'</span>'
 			});
+			setTimeout(showUserLocationIfAvailable,5000)
 		});
 		
 	}
