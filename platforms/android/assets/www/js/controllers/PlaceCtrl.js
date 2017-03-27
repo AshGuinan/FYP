@@ -68,6 +68,36 @@ angular
 		return null
 	};
 
+	function showUserLocationIfAvailable(){
+		if(!navigator)
+			return;
+		navigator.geolocation.getCurrentPosition(function(success){
+			console.log('getCurrentPosition');
+			console.log(success);
+			myLocation = new google.maps.LatLng(
+				success.coords.latitude,
+				success.coords.longitude
+			);
+			var marker = new Marker({
+				map: map,
+				position: myLocation,
+				icon: {
+					path: SQUARE_PIN,
+					fillColor: 'black',
+					fillOpacity: 0,
+					strokeColor: '',
+					strokeWeight: 0
+				},
+				map_icon_label: '<span class="me">'+
+									'<span class="map-icon icon ion-ios-body">' +
+									'</span>' +
+									'<span> me </span>' +
+								'</span>'
+			});
+		});
+		
+	}
+
 	function initMap() {
 		$scope.initCenter = Place.userLocationToLatLong($scope.currentUser)
 		var mapElement = document.getElementById('map')
@@ -377,6 +407,7 @@ angular
 		console.log('init place  ctrl after fetching user')
 		$scope.currentUser = user;
 		initMap();
+		showUserLocationIfAvailable();
 		Place.fetchPlaces(createMarkerFromCustomPlace);
 	})
 

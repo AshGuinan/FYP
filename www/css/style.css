@@ -82,3 +82,19 @@ ion-side-menu {
 	border: 2px solid #ffd024 ;
 	color: #ffd024 !important ;
 }
+.map-icon-label .myMarker {
+	color: white;
+	background-color: #339dd8;
+	display:block;
+}
+.map-icon-label .map-icon.ion-ios-body{
+	color: white;
+	background-color: #339dd8;
+}
+
+.map-icon-label .me{
+    font-size: 12px;
+    padding: 7px;
+    display: block;
+    margin-top: -19px;
+}

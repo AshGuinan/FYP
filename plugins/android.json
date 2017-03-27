@@ -18,7 +18,14 @@
         },
         "cordova-plugin-console": {
             "PACKAGE_NAME": "space.beaconapp"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "space.beaconapp"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "space.beaconapp"
+        }
+    }
 }
