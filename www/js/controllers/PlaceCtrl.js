@@ -163,7 +163,10 @@ angular
 	$scope.addPlace = function(){
 		Place.addPlace($scope.newPlace, function(place){
 			createMarkerFromCustomPlace(place);
-			resetNewPlaceForm()
+			resetNewPlaceForm()			
+			if($scope.newUnsavedPlace != null) {
+				$scope.newUnsavedPlace.setMap(null)
+			}
 			nPData.close();
 		});
 	};
@@ -261,7 +264,7 @@ angular
 					'<p> Price Level' + place.price_level + '</p>' + 
 					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
 					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
-					'<a href="geo:'+lat+','+long+'?q='+lat+','+long+'('+place.name+')") class="ion-ios-navigate"> Take me there! </a>' +
+					// '<a href="geo:'+lat+','+long+'?q='+lat+','+long+'('+place.name+')") class="ion-ios-navigate"> Take me there! </a>' +
 				'</div>';
 
 			infowindow.setContent( $compile(content)($scope)[0] )

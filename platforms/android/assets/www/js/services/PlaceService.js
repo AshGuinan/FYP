@@ -48,7 +48,8 @@ angular
 	Place.addPlace = function(newPlace,callback){
 		$http.post(SERVER_ROOT + 'addPlace', newPlace).then(
 			function(success){
-				callback(success);
+				console.log('added place', success)
+				callback(success.data);
 			},function(error){
 				console.log('error', error)
 		});
