@@ -7,10 +7,14 @@ angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '
 			$scoep.currentUser = user;
 			$location.path('/places');
 		})
-	}
+	};
 
 	User.fetchLoggedInUser(function(user){
+		if(user == null){
+			$location.path('/');
+			return;
+		}
 		$scope.currentUser = user;
-	})
+	});
 
 }]);

@@ -1,6 +1,6 @@
 angular
 	.module('UserService', [])
-	.factory('User', ['$http', '$route', function($http, $route) {
+	.factory('User', ['$http', '$route', '$location', function($http, $route, $location) {
 
 	User = {};
 
@@ -50,8 +50,7 @@ angular
 		console.log('logging out...');
 		$http.get(SERVER_ROOT + 'api/logout').then(function(success){
 			console.log('logged out');
-			window.location.reload(false); 
-
+			$location.path('/');
 		});      
 	}
 

@@ -37,22 +37,6 @@ module.exports = function(app, passport, raccoon) {
             });
         });
 
-    app.get('/api/places', isLoggedIn, function(req, res) {
-        res.sendfile('./public/views/place.html');
-    });
-
-    app.get('/api/recommend', isLoggedIn, function(req, res) {
-        res.sendfile('./public/views/recommend.html');
-    });
-
-    app.get('/api/user', userPage, function(req, res) {
-        console.log('User page loading');
-    });
-
-    app.get('/api/frontPage', frontPage, function(req, res) {
-        console.log('Front page loading');
-    });
-
     app.get('/me', isLoggedIn, function(req, res) {
         res.send(req.user);
     });
@@ -257,34 +241,8 @@ module.exports = function(app, passport, raccoon) {
         }
 
         // if they aren't redirect them to the home page
-        res.sendfile('./public/views/fail.html');
+        res.send(null);
         console.log('Nope, Access Denied');
-    }
-
-    //For profile page
-    function userPage(req, res, next) {
-
-        // if user is authenticated in the session, carry on
-        if (req.isAuthenticated()){
-            console.log('Logged in - edit your profile!');
-            res.sendfile('./public/views/profile.html');
-
-        } else{
-            console.log('Sign in!');
-            res.sendfile('./public/views/user.html');
-        }
-    }
-
-    function frontPage(req, res, next) {
-        // if user is authenticated in the session, carry on
-        if (req.isAuthenticated()){
-            console.log('Logged in - Hello!');
-            res.sendfile('./public/views/home.html');
-
-        } else{
-            console.log('Sign in!');
-            res.sendfile('./public/views/user.html');
-        }
     }
 
     app.get('*', function(req, res) {
