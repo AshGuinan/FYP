@@ -46,12 +46,37 @@ ion-side-menu {
 }
 
 .map-icon-label .map-icon {
-	font-size: 24px;
+	display:inline-block;
+	padding:5px;
+	font-size: 26px;
 	color: #FFFFFF;
-	line-height: 48px;
 	text-align: center;
 	white-space: nowrap;
+	background-color:black;
+	border-radius:5px;
 }
-.map-icon-label .map-icon .ion-university{
+.map-icon-label .map-icon.ion-university{
 	background-color:red;
+}
+.map-icon-label .map-icon.ion-leaf{
+	background-color:green;
+}
+.map-icon-label .map-icon.ion-happy{
+	background-color:orange;
+}
+.map-icon-label .map-icon.ion-fork{
+	background-color: #00CCBB;
+}
+.map-icon-label .map-icon.ion-paintbrush{
+	background-color:purple;
+}
+.map-icon-label .map-icon.ion-information-circled{
+	background-color:black;
+}
+.map-icon-label .map-icon.ion-help-buoy{
+	background-color:red;
+}
+.map-icon-label .map-icon.recommended{
+	border: 2px solid #ffd024 ;
+	color: #ffd024 !important ;
 }

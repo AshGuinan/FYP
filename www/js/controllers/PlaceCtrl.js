@@ -56,7 +56,16 @@ angular
 				return superType;
 			}
 		}
-
+		return null;
+	};
+	function typeFromSubTypes(subTypes){
+		for(var i = 0; i < subTypes.length; i++){
+			var type = typeFromSubType(subTypes[i]);
+			if(type != null){
+				return type
+			}
+		}
+		return null
 	};
 
 	function initMap() {
@@ -184,37 +193,32 @@ angular
 		console.log("place " + place.place_id + " has type " + place.type)
 		var type = (place.types[0]).replace("_"," ");
 		var iconLabel = '';	
-		var color = ''
 		switch(place.type){
 			case 'education':
 				iconLabel = 'ion-university';
-				color = 'blue';
 				break;
 			case 'outdoors':
 				iconLabel = 'ion-leaf';
-				color = 'green';
 				break;
 			case 'indoorFun':
 				iconLabel = 'ion-happy';
-				color = 'orange';
 				break;
 			case 'food':
 				iconLabel = 'ion-fork';
-				color = '#00CCBB';
 				break;
 			case 'culture':
 				iconLabel = 'ion-paintbrush';
-				color = 'purple';
 				break;
 			case 'goodToKnow':
-				iconLabel = 'ion-help';
-				color = 'white';
+				iconLabel = 'ion-information-circled';
 				break;
 			case 'ICE':
-				iconLabel = 'ion-information';
-				color = 'red';
+				iconLabel = 'ion-help-buoy';
 				break;
 
+		}
+		if(place.recommended){
+			iconLabel += " recommended";
 		}
 		console.log(iconLabel);
 		var marker = new Marker({
@@ -222,8 +226,8 @@ angular
 			position: place.geometry.location,
 			icon: {
 				path: SQUARE_PIN,
-				fillColor: color,
-				fillOpacity: 1,
+				fillColor: 'black',
+				fillOpacity: 0,
 				strokeColor: '',
 				strokeWeight: 0
 			},
@@ -296,6 +300,9 @@ angular
 						// google id
 				        service.getDetails({placeId: id}, function(place, status) {
 				          if (status === google.maps.places.PlacesServiceStatus.OK) {
+				            place.recommended = true;
+				            place.type = typeFromSubTypes(place.types)
+				            console.log(place)
 				            createMarker(place);
 				            console.log('created marker for ', id, place.place_id );
 				            console.log('which points to ', $scope.recs[place.place_id]	 );
@@ -314,6 +321,7 @@ angular
 				            	break;
 			            	}
 			            }
+			            place.recommended = true;
 						$scope.recs[place.id] = {
 							place_id: place.id,
 							types: [place.type],
