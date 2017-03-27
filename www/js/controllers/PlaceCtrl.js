@@ -184,27 +184,35 @@ angular
 		console.log("place " + place.place_id + " has type " + place.type)
 		var type = (place.types[0]).replace("_"," ");
 		var iconLabel = '';	
+		var color = ''
 		switch(place.type){
 			case 'education':
-				iconLabel = '<span class="map-icon icon ion-university"></span>';
+				iconLabel = 'ion-university';
+				color = 'blue';
 				break;
 			case 'outdoors':
-				iconLabel = '<span class="map-icon icon ion-leaf"></span>';
+				iconLabel = 'ion-leaf';
+				color = 'green';
 				break;
 			case 'indoorFun':
-				iconLabel = '<span class="map-icon icon ion-happy"></span>';
+				iconLabel = 'ion-happy';
+				color = 'orange';
 				break;
 			case 'food':
-				iconLabel = '<span class="map-icon icon ion-fork"></span>';
+				iconLabel = 'ion-fork';
+				color = '#00CCBB';
 				break;
 			case 'culture':
-				iconLabel = '<span class="map-icon icon ion-paintbrush"></span>';
+				iconLabel = 'ion-paintbrush';
+				color = 'purple';
 				break;
 			case 'goodToKnow':
-				iconLabel = '<span class="map-icon icon ion-help-buoy"></span>';
+				iconLabel = 'ion-help';
+				color = 'white';
 				break;
 			case 'ICE':
-				iconLabel = '<span class="map-icon icon ion-information-circled"></span>';
+				iconLabel = 'ion-information';
+				color = 'red';
 				break;
 
 		}
@@ -214,12 +222,12 @@ angular
 			position: place.geometry.location,
 			icon: {
 				path: SQUARE_PIN,
-				fillColor: '#00CCBB',
+				fillColor: color,
 				fillOpacity: 1,
 				strokeColor: '',
 				strokeWeight: 0
 			},
-			map_icon_label: iconLabel
+			map_icon_label: '<span class="map-icon icon ' + iconLabel + '"></span>'
 		});
 
 		marker.place = place;

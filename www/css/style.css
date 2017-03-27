@@ -52,3 +52,6 @@ ion-side-menu {
 	text-align: center;
 	white-space: nowrap;
 }
+.map-icon-label .map-icon .ion-university{
+	background-color:red;
+}
