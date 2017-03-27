@@ -4,39 +4,43 @@
 </h1>
 </ion-header-bar>
     
-<ion-content>
-
-    <h2>
-        Log in
-    </h2>
-    <form>
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" placeholder="user name" name="userName" ng-model="user.userName">
+<ion-content scroll="false">
+    <div ng-show="showLoginForm">
+        <h2>
+            Log in
+        </h2>
+        <form>
+        <div class="list">
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Username</span>
+                <input type="text" placeholder="Username" ng-model="user.userName">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Password</span>
+                <input type="text" placeholder="Password" ng-model="user.password">
+            </label>
+            <button type="submit" class="button button-positive" ng-click="login()">Login</button>
+            or
+            <button type="button" class="button button-energized" ng-click="showLoginForm = false">Signup instead</button>
         </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" placeholder="password" name="password" ng-model="user.password">
+    </div>
+
+    <div ng-show="!showLoginForm">
+        <h2>
+            Signup
+        </h2>
+        <div class="list">
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Username</span>
+                <input type="text" placeholder="Username" ng-model="user.userName">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Password</span>
+                <input type="text" placeholder="Password" ng-model="user.password">
+            </label>
+            <button type="submit" class="button button-positive" ng-click="signup()">Signup</button>
+            or
+            <button type="button" class="button button-energized" ng-click="showLoginForm = true">Login instead</button>
         </div>
-
-        <button type="submit" class="btn btn-warning btn-lg" ng-click="login()">Login</button>
-    </form>
-
-    <hr>
-
-    <h2>
-        Signup
-    </h2>
-
-    <form>
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" placeholder="user name" name="userName" ng-model="user.userName">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" placeholder="password" name="password" ng-model="user.password">
-        </div>
-        <button type="submit" class="btn btn-warning btn-lg" ng-click="signup()">Signup</button>
-    </form>
+    </div>
 </ion-content>

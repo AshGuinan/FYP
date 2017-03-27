@@ -14,6 +14,7 @@ angular
 		userName: '',
 		password: ''
 	};
+	$scope.showLoginForm = true;
 
 	$scope.login = function(){
 		console.log('login', $scope.user)
