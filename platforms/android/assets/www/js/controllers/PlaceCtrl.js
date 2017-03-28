@@ -69,8 +69,11 @@ angular
 	};
 
 	function showUserLocationIfAvailable(){
-		if(!navigator)
+		console.log('showUserLocationIfAvailable', navigator, navigator.geolocation);
+		if(typeof navigator.geolocation != 'object') {
+			console.log("navigator.geolocation isn't defined");
 			return;
+		}
 		navigator.geolocation.getCurrentPosition(function(success){
 			console.log('getCurrentPosition');
 			console.log(success);
