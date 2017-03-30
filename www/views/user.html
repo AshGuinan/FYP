@@ -39,15 +39,15 @@
         </div>
 
         <div class="form-group">
-            <label>Ages of Children</label>
-<!--             <input type="text" class="form-control" name="ageChildren" value="{{currentUser.ageChildren}}"> -->
-            <select ng-model="currentUser.ageChildren" name="ageChildren">
-                 <option value="0">0-3</option>   
-                 <option value="1">4-6</option>   
-                 <option value="2">7-10</option>   
-                 <option value="3">11-13</option>   
-                 <option value="4">14+</option>
-            </select>
+            <label>Age of Children</label>
+            <label>Young Children:
+                <input type="checkbox" ng-model="currentUser.young_child">
+            </label>
+            {{currentUser.young_child}}
+            DDD
+            <label>Older Children [10+]:
+                <input type="checkbox" ng-model="currentUser.older_child">
+            </label>
         </div>
         <div class="form-group">
             <label>Activity Preference</label>

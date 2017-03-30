@@ -27,7 +27,7 @@ angular
 		user: null,
 		price_level: 1,
 		young_child: false,
-		older_children: false
+		older_child: false
 	};
 
 	var superTypes = ['education', 'indoorFun', 'food', 'outdoors', 
