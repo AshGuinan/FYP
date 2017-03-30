@@ -33,8 +33,8 @@ angular
 		User.signup($scope.user, function(user){
 			console.log(user);
 			if(user != null){
-				console.log('go to /places')
-				$location.path('/places');
+				console.log('go to /user')
+				$location.path('/user');
 			}
 		})
 	};

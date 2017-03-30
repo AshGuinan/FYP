@@ -11,7 +11,7 @@ angular
 	var Dublin = new google.maps.LatLng(53.3484285,-6.2569559);
 	var Cork = new google.maps.LatLng(51.8983147,-8.4822781);
 	var Limerick = new google.maps.LatLng(52.6676852,-8.6366651);
-	$scope.radius = 2000;
+	$scope.radius = 500;
 	$scope.markers =[];
 	$scope.newUnsavedPlace = null;
 	$scope.playgrounds =[];

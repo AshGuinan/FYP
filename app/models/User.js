@@ -20,19 +20,16 @@ var User = sequelize.define('User', {
         defaultValue: false
     },
     budget: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "low"
+        type : Sequelize.STRING, 
+        default: '1'
     },
-    numChildren: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: 0
+    young_child : {
+        type : Sequelize.BOOLEAN, 
+        default: false
     },
-    ageChildren: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: 0
+    older_child : {
+        type : Sequelize.BOOLEAN, 
+        default: false
     },
     activityType: {
         type: DataTypes.STRING,
