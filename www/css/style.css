@@ -1,4 +1,7 @@
-body { padding-top:30px; }
+body { 
+	padding-top:30px; 
+}
+
 #map {
 	position:fixed !important;
     height: 90vh;
@@ -6,6 +9,11 @@ body { padding-top:30px; }
     bottom:0px;
     overflow: hidden;
 }
+ion-header-bar h1{
+	color: white;
+    font-size: 2em
+}
+
 .row{
 	margin-left:5%;
 	margin-right: 5%;

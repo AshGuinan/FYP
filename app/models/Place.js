@@ -12,7 +12,9 @@ var Place = sequelize.define('Place', {
 	verified : {type : Sequelize.BOOLEAN, default: false},
 	type : {type : Sequelize.STRING, default: ''},
 	user : {type : Sequelize.STRING, default: ''},
-	price_level : {type : Sequelize.STRING, default: 'medium'}
+	young_child : {type : Sequelize.BOOLEAN, default: false},
+	older_child : {type : Sequelize.BOOLEAN, default: false},
+	price_level : {type : Sequelize.STRING, default: '1'}
 });
 
 console.log("defined custom places");

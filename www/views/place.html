@@ -37,7 +37,7 @@
     		  {{place.address}},
     		  {{place.type}},
     		  {{place.user}},
-    		  {{place.verified}}
+    		  {{place.verified}},
     		  <button ng-click="verify(place.id)">Verify Me! </button> 
     		</div>
     	</div>
@@ -89,15 +89,23 @@
             </select>
     	</div>
     	<div class="form-group">
-        	<label>Price</label>
-        	<select ng-model="newPlace.price_level">
+            <label>Price</label>
+            <select ng-model="newPlace.price_level">
              <option value="0">Free</option>   
              <option value="1">Inexpensive</option>   
              <option value="2">Moderate</option>   
              <option value="3">Expensive</option>   
              <option value="4">Very Expensive</option>   
             </select>
-    	</div>
+        </div>
+        <div class="form-group">
+            <label>Suitable for Young Children:
+                <input type="checkbox" ng-model="newPlace.young_child">
+            </label>
+            <label>Suitable for Older Children [10+]:
+                <input type="checkbox" ng-model="newPlace.older_child">
+            </label>
+        </div>
 		<button type="submit">Add!</button>
     </form>
 </div>

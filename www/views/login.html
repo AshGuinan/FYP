@@ -19,9 +19,12 @@
                 <span class="input-label">Password</span>
                 <input type="password" placeholder="Password" ng-model="user.password">
             </label>
-            <button type="submit" class="button button-positive" ng-click="login()">Login</button>
-            or
-            <button type="button" class="button button-energized" ng-click="showLoginForm = false">Signup instead</button>
+            <div class="btn">
+                <button type="submit" class="button button-positive" ng-click="login()">Login</button>
+                or
+                <button type="button" class="button button-energized" ng-click="showLoginForm = false">Signup instead</button>
+            </div>
+            
         </div>
     </div>
 
@@ -38,9 +41,11 @@
                 <span class="input-label">Password</span>
                 <input type="password" placeholder="Password" ng-model="user.password">
             </label>
-            <button type="submit" class="button button-positive" ng-click="signup()">Signup</button>
-            or
-            <button type="button" class="button button-energized" ng-click="showLoginForm = true">Login instead</button>
+            <div class="btn">
+                <button type="submit" class="button button-positive" ng-click="signup()">Signup</button>
+                or
+                <button type="button" class="button button-energized" ng-click="showLoginForm = true">Login instead</button>
+            </div>
         </div>
     </div>
 </ion-content>

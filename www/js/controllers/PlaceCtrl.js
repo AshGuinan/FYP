@@ -24,7 +24,10 @@ angular
 		type: '',
 		lat: 0,
 		long: 0,
-		user: null
+		user: null,
+		price_level: 1,
+		young_child: false,
+		older_children: false
 	};
 
 	var superTypes = ['education', 'indoorFun', 'food', 'outdoors', 

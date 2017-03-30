@@ -1,7 +1,6 @@
 module.exports = function(app, passport, raccoon) {
     var User = require('./models/User');
     var Place = require('./models/Place');
-    //var raccoon = require('raccoon');
 
 	// server routes ===========================================================
 	// handle things like api calls
@@ -209,7 +208,9 @@ module.exports = function(app, passport, raccoon) {
                     verified: false,
                     beaconRating: 0,
                     user: req.user.userName,
-                    price_level: req.body.price_level
+                    price_level: req.body.price_level,
+                    young_child: req.body.young_child,
+                    older_child: req.body.older_child
                 }
                 console.log(data);
                 Place.create(data).then(function(place){
