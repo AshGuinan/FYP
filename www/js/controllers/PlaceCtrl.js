@@ -40,6 +40,7 @@ angular
 	$scope.culture = ['art_gallery', 'library'];
 	$scope.goodToKnow = ['bank', 'gas_station', 'taxi_stand', 'train_station', 'post_office', 'pharmacy'];
 	$scope.ICE = ['police', 'hospital', 'doctor', 'embassy', 'car_repair'];
+	$scope.maxprice;
 	// combine list of all place sub types
 	$scope.allTypes =  $scope.education.concat( 
 		$scope.indoorFun.concat(
@@ -75,6 +76,7 @@ angular
 	function showUserLocationIfAvailable(){
 		if(typeof navigator.geolocation != 'object') {
 			console.log("navigator.geolocation isn't defined");
+			$scope.myLocation = Place.userLocationToLatLong($scope.currentUser);
 			return;
 		}
 		navigator.geolocation.getCurrentPosition(function(success){
@@ -184,6 +186,7 @@ angular
 			service.nearbySearch({
 				location: $scope.myLocation,
 				radius: $scope.radius,
+				maxprice: $scope.maxprice,
 				type: [subtype],
 			}, searchCallback.bind(type));
 		}		

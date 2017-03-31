@@ -26,7 +26,18 @@
             </div>
         </div>
 </ion-header-bar>
-<ion-header-bar align-title="left" class="bar-subheader bar-positive"><span>Search Radius [meters]:</span> <input type="text" name="radius" ng-model="radius"> </ion-header-bar>
+<ion-header-bar align-title="left" class="bar-subheader bar-positive">
+	<span>Search Radius [meters]:</span> 
+	<input type="text" name="radius" ng-model="radius"> 
+	<span>Budget:</span>
+	<select ng-model="maxprice" name="budget">
+        <option value=0>Free</option>   
+        <option value=1>Inexpensive</option>   
+        <option value=2>Moderate</option>   
+        <option value=3>Expensive</option>   
+        <option value=4>Very Expensive</option>
+    </select>
+</ion-header-bar>
 <ion-side-menus>
     <ion-side-menu-content scroll="false">
         <div id="map"></div>
