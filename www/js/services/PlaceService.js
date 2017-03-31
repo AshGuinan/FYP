@@ -22,7 +22,7 @@ angular
 	Place.fetchPlaces = function(callback){	
 		$http.get(SERVER_ROOT + 'fetchPlaces').then(
 			function (data){
-				console.log('fetcehd ', data)
+				console.log('fetched ', data)
 				var places = data.data;
 				for(i=0;i<places.length;i++){
 	        		callback(places[i]);

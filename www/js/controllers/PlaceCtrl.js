@@ -18,6 +18,7 @@ angular
 	$scope.lat;
 	$scope.long;
 	$scope.activeTypes = [];
+	$scope.myLocation;
 	$scope.newPlace = {
 		name: '',
 		address: '',
@@ -72,7 +73,6 @@ angular
 	};
 
 	function showUserLocationIfAvailable(){
-		console.log('showUserLocationIfAvailable', navigator, navigator.geolocation);
 		if(typeof navigator.geolocation != 'object') {
 			console.log("navigator.geolocation isn't defined");
 			return;
@@ -80,16 +80,19 @@ angular
 		navigator.geolocation.getCurrentPosition(function(success){
 			console.log('getCurrentPosition');
 			console.log(success);
-			myLocation = new google.maps.LatLng(
+
+			$scope.myLocation = new google.maps.LatLng(
 				success.coords.latitude,
 				success.coords.longitude
 			);
+
 			if($scope.myMarker){
 				$scope.myMarker.setMap(null)
 			}
+
 			$scope.myMarker = new Marker({
 				map: map,
-				position: myLocation,
+				position: $scope.myLocation,
 				icon: {
 					path: SQUARE_PIN,
 					fillColor: 'black',
@@ -103,17 +106,18 @@ angular
 									'<span class="me"> me </span>' +
 								'</span>'
 			});
+			//Update every 5 secs
 			setTimeout(showUserLocationIfAvailable,5000)
 		});
 		
 	}
 
 	function initMap() {
-		$scope.initCenter = Place.userLocationToLatLong($scope.currentUser)
-		var mapElement = document.getElementById('map')
-		if(mapElement == null)
+		$scope.initCenter = Place.userLocationToLatLong($scope.currentUser);
+		var mapElement = document.getElementById('map');
+		if(mapElement == null){
 			return ;
-		console.log('mapp element is', mapElement);
+		}
 		map = new google.maps.Map(mapElement, {
 			center: $scope.initCenter,
 			zoom: 15,
@@ -130,10 +134,10 @@ angular
 		
 		infowindow = new google.maps.InfoWindow();
 		service = new google.maps.places.PlacesService(map);
-		
+		//Add place on double click
 		google.maps.event.addListener(map, 'dblclick', function(event){
 			if($scope.newUnsavedPlace != null) {
-				$scope.newUnsavedPlace.setMap(null)
+				$scope.newUnsavedPlace.setMap(null);
 			}
 
 			$scope.newUnsavedPlace = new google.maps.Marker({
@@ -153,8 +157,6 @@ angular
 		});
 	};	
 
-// var clearMarker = document.getElementById("clearMarkers");
-// 	clearMarker.addEventListener("click", removeMarkers, false);
 	$scope.centerMap =function(location){
 		map.setCenter(location);
 		$ionicSideMenuDelegate.toggleRight();
@@ -172,21 +174,21 @@ angular
 		return $scope.activeTypes.indexOf(type) > -1;
 	}
 
-	showPlacesOfType = function(type){
+	function showPlacesOfType(type){
 		$scope.activeTypes.push(type);
 		var sType = $scope[type];
+		map.setCenter($scope.myLocation);
 		for(var x=0; x<sType.length; x++){
 			subtype = sType[x]
-			console.log(subtype);
 			service.nearbySearch({
-				location: map.getCenter(),
+				location: $scope.myLocation,
 				radius: $scope.radius,
 				type: [subtype],
 			}, searchCallback.bind(type));
 		}		
 	}
 
-	hidePlacesOfType = function(type){
+	function hidePlacesOfType(type){
 		var index = $scope.activeTypes.indexOf(type);
 		$scope.activeTypes.splice(index,1);
 		var sType = $scope[type];
@@ -234,7 +236,7 @@ angular
 	}
 
 	function createMarker(place) {
-		console.log("place " + place.place_id + " has type " + place.type)
+		console.log("place " + place.place_id + " has type " + place.type);
 		var type = (place.types[0]).replace("_"," ");
 		var iconLabel = '';	
 		switch(place.type){
@@ -302,8 +304,8 @@ angular
 					'<p> This Address: ' + place.vicinity + '</p>' +
 					'<p>' + placeRating + '</p>' +
 					'<p> Price Level' + place.price_level + '</p>' + 
-					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
-					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
+					'<a ng-click=upvote("' + place.place_id + '") ng-class="{liked: liked}" class="ion-checkmark-round"> I liked it! </a>' +
+					'<a ng-click=downvote("' + place.place_id + '") ng-class="{disliked: disliked}" class="ion-close-round"> Not for me...  </a>' +
 					// '<a href="geo:'+lat+','+long+'?q='+lat+','+long+'('+place.name+')") class="ion-ios-navigate"> Take me there! </a>' +
 				'</div>';
 
@@ -313,14 +315,18 @@ angular
 	}
 
 		$scope.upvote = function(place){
-		console.log('Upvote place', place);
-		$http.post(SERVER_ROOT + 'upvote', {place: place}).then(function(success){
-			console.log('upvoted!');
-		})
+			console.log('Upvote place', place);
+			$scope.liked = true;
+			$scope.disliked = false;
+			$http.post(SERVER_ROOT + 'upvote', {place: place}).then(function(success){
+				console.log('upvoted!');
+			})
 	};
 
 	$scope.downvote = function(place){
 		console.log('Downvote place', place);
+		$scope.liked = false;
+		$scope.disliked = true;
 		$http.post(SERVER_ROOT + 'downvote', {place: place}).then(function(success){
 			console.log('downvoted!');
 		})
@@ -373,6 +379,9 @@ angular
 							types: [place.type],
 							name: place.name,
 							vicinity: place.address,
+							young_child: place.young_child,
+							older_child: place.older_child,
+							price_level: place.price_level
 						}	
 						console.log(recs);
 						

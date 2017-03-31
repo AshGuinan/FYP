@@ -30,17 +30,6 @@
 <ion-side-menus>
     <ion-side-menu-content scroll="false">
         <div id="map"></div>
-
-    	<div ng-if="isAdmin">
-    		<div ng-repeat="place in allPlaces track by $index">
-    		  {{place.name}},
-    		  {{place.address}},
-    		  {{place.type}},
-    		  {{place.user}},
-    		  {{place.verified}},
-    		  <button ng-click="verify(place.id)">Verify Me! </button> 
-    		</div>
-    	</div>
     </ion-side-menu-content>
 
 
@@ -71,6 +60,12 @@
                 </p>
                 <p>
                     Price Level: {{place.price_level}}
+                </p>
+                <p>
+                    Suitable for Younger Children: {{place.young_child}}
+                </p>
+                <p>
+                    Suitable for Older Children: {{place.older_child}}
                 </p>
             </div>
         </div>

@@ -2,7 +2,6 @@ angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '
 	$scope.currentUser = {}
 
 	$scope.updateUserDetails = function(){
-		console.log('updateUserDetails', $scope.currentUser)
 		User.updateUserDetails($scope.currentUser, function(user){
 			$scope.currentUser = user;
 			$location.path('/places');
@@ -18,6 +17,30 @@ angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '
 			return;
 		}
 		$scope.currentUser = user;
+		$scope.isAdmin = user.verified;
+		console.log($scope.isAdmin);
 	});
 
+	function fetchPlace (){
+		$http.get(SERVER_ROOT + 'fetchAllPlaces').then(
+			function (data){
+				$scope.newPlaces = data.data;
+				console.log('places');
+				console.log(places);
+	        },
+	        function (error){
+				console.log('Fail');
+			});
+	}
+	$scope.verify = function(id){
+		$http.post(SERVER_ROOT + 'verify',id).then(
+			function (data){
+				console.log('verified');
+	        },
+	        function (error){
+				console.log('Fail');
+			});
+	}
+
+	fetchPlace();
 }]);

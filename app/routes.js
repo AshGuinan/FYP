@@ -1,7 +1,7 @@
 module.exports = function(app, passport, raccoon) {
     var User = require('./models/User');
     var Place = require('./models/Place');
-
+    var voted = false;
 	// server routes ===========================================================
 	// handle things like api calls
 	// authentication routes
@@ -44,8 +44,8 @@ module.exports = function(app, passport, raccoon) {
     //TODO: Lock down voting, unlike, undislike
 
     app.post('/upvote', isLoggedIn, function(req, res) {
-        var voted = false;
-        console.log('upvote called!')
+        
+        console.log('upvote called!');
         raccoon.allWatchedFor(req.user.userName).then((results) => {
               // returns an array of all the items that user has liked or disliked.
               for(var x=0; x<results.length; x++){
@@ -82,37 +82,51 @@ module.exports = function(app, passport, raccoon) {
                 }
                 
             });
-        
     });
 
     app.post('/downvote', isLoggedIn, function(req, res) {
-        raccoon.disliked(req.user.userName, req.body.place).then(() => {
-            console.log('Downvoted...');
-            if(req.body.place.length > 6){
-                // it's a google id, nothing to increment here 
-                res.send({decremented: true});
-            }
-            else{
-                Place.findById(req.body.place).then(function(place){
-                    if(place) {
-                        console.log("The place had id " + req.body.place + " and we found " + place.name)
-                        place.decrement({beaconRating: 1}).then(function(){
-                            console.log('decremented places rating in db')
+        console.log('downvote called!');
+        raccoon.allWatchedFor(req.user.userName).then((results) => {
+              // returns an array of all the items that user has liked or disliked.
+              for(var x=0; x<results.length; x++){
+                if(req.body.place==results[x]){
+                    console.log('Already voted');
+                    voted = true;
+                    raccoon.undisliked(req.user.userName, req.body.place).then(() => {
+                        console.log('like undone!');
+                    });
+                }
+              }
+            }).then(()=>{
+                if(voted==false){
+                    raccoon.disliked(req.user.userName, req.body.place).then(() => {
+                        console.log('Downvoted...');
+                        if(req.body.place.length > 6){
+                            // it's a google id, nothing to increment here 
                             res.send({decremented: true});
-                        });
-                    } else {
-                        res.send({incremented: true});    
-                    }
-                });
-            }
-        });
+                        }
+                        else{
+                            Place.findById(req.body.place).then(function(place){
+                                if(place) {
+                                    console.log("The place had id " + req.body.place + " and we found " + place.name)
+                                    place.decrement({beaconRating: 1}).then(function(){
+                                        console.log('decremented places rating in db')
+                                        res.send({decremented: true});
+                                    });
+                                } else {
+                                    res.send({decremented: true});    
+                                }
+                            });
+                        }
+                    });
+                }
+                
+            });
     });
-
     app.get('/fetchPlaces', isLoggedIn, function(req, res) {
         console.log("fetch places where user is", req.user.userName);
         Place.findAll({ 
             where: { 
-                //user: req.user.userName
                 $or: [{user: req.user.userName}, {verified: true}]
             }
         })
@@ -123,7 +137,9 @@ module.exports = function(app, passport, raccoon) {
     });
 
     app.get('/fetchAllPlaces', isLoggedIn, function(req, res) {
-        Place.findAll().then(function(data){
+        Place.findAll({ 
+            where: { verified:false }
+        }).then(function(data){
             res.send(data);
         });
     });
@@ -162,8 +178,8 @@ module.exports = function(app, passport, raccoon) {
         console.log(req.user.userName,req.user.id)
         req.user.updateAttributes({
             budget: req.body.budget,
-            numChildren: req.body.numChildren,
-            ageChildren: req.body.ageChildren,
+            young_child: req.body.young_child,
+            older_child: req.body.older_child,
             activityType: req.body.activityType,
             location: req.body.location 
         }).then(function (user) {
@@ -185,7 +201,8 @@ module.exports = function(app, passport, raccoon) {
                 console.log('place has been verified');
                 place.updateAttributes({
                     verified: true,
-                })
+                });
+                res.send(200);
             }
         });
     });

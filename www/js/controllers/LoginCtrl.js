@@ -17,7 +17,6 @@ angular
 	$scope.showLoginForm = true;
 
 	$scope.login = function(){
-		console.log('login', $scope.user)
 		User.login($scope.user, function(user){
 			console.log(user);
 			if(user != null){
@@ -29,7 +28,6 @@ angular
 
 
 	$scope.signup = function(){
-		console.log('signup', $scope.user)
 		User.signup($scope.user, function(user){
 			console.log(user);
 			if(user != null){
