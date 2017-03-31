@@ -179,7 +179,8 @@ angular
 		var sType = $scope[type];
 		map.setCenter($scope.myLocation);
 		for(var x=0; x<sType.length; x++){
-			subtype = sType[x]
+			subtype = sType[x];
+			console.log($scope.myLocation);
 			service.nearbySearch({
 				location: $scope.myLocation,
 				radius: $scope.radius,
@@ -193,7 +194,7 @@ angular
 		$scope.activeTypes.splice(index,1);
 		var sType = $scope[type];
 		
-		for(var i =0; i< markers.length; i++){
+		for(var i = 0; i< markers.length; i++){
 			var marker = markers[i];
 			if(marker.place.type == type){
 				marker.setMap(null)
@@ -304,8 +305,10 @@ angular
 					'<p> This Address: ' + place.vicinity + '</p>' +
 					'<p>' + placeRating + '</p>' +
 					'<p> Price Level' + place.price_level + '</p>' + 
-					'<a ng-click=upvote("' + place.place_id + '") ng-class="{liked: liked}" class="ion-checkmark-round"> I liked it! </a>' +
-					'<a ng-click=downvote("' + place.place_id + '") ng-class="{disliked: disliked}" class="ion-close-round"> Not for me...  </a>' +
+					'<p> Suitable for young kids: ' + place.young_child + '</p>' + 
+					'<p> Suitable for older kids: ' + place.older_child + '</p>' + 
+					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
+					'<a ng-click=downvote("' + place.place_id + '") class="ion-close-round"> Not for me...  </a>' +
 					// '<a href="geo:'+lat+','+long+'?q='+lat+','+long+'('+place.name+')") class="ion-ios-navigate"> Take me there! </a>' +
 				'</div>';
 

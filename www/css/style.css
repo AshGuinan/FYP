@@ -1,12 +1,6 @@
 body { 
 	padding-top:30px; 
 }
-.liked {
-	background-color: green;
-}
-.disliked {
-	background-color: red;
-}
 
 #map {
 	position:fixed !important;
