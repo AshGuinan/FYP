@@ -40,7 +40,7 @@ angular
 	$scope.culture = ['art_gallery', 'library'];
 	$scope.goodToKnow = ['bank', 'gas_station', 'taxi_stand', 'train_station', 'post_office', 'pharmacy'];
 	$scope.ICE = ['police', 'hospital', 'doctor', 'embassy', 'car_repair'];
-	$scope.maxprice;
+	$scope.maxprice = 1;
 	// combine list of all place sub types
 	$scope.allTypes =  $scope.education.concat( 
 		$scope.indoorFun.concat(
@@ -298,6 +298,7 @@ angular
 		} else if (place.rating == undefined && place.beaconRating == undefined){
 			placeRating = " ";
 		}
+
 		lat = place.geometry.location.lat();
 		long = place.geometry.location.lng();
 		google.maps.event.addListener(marker, 'click', function() {
@@ -416,6 +417,8 @@ angular
 					beaconRating: customPlace.beaconRating,
 					name: customPlace.name,
 					vicinity: address,
+					young_child: customPlace.young_child,
+					older_child: customPlace.older_child,
 					geometry: {
 						location: location
 					}

@@ -21,12 +21,12 @@ angular.module('UserCtrl', ['ionic']).controller('UserController', [ '$scope', '
 		console.log($scope.isAdmin);
 	});
 
-	function fetchPlace (){
+	function fetchPlace(){
 		$http.get(SERVER_ROOT + 'fetchAllPlaces').then(
 			function (data){
 				$scope.newPlaces = data.data;
 				console.log('places');
-				console.log(places);
+				console.log(newPlaces);
 	        },
 	        function (error){
 				console.log('Fail');
