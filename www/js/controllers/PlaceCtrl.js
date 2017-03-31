@@ -41,6 +41,7 @@ angular
 	$scope.goodToKnow = ['bank', 'gas_station', 'taxi_stand', 'train_station', 'post_office', 'pharmacy'];
 	$scope.ICE = ['police', 'hospital', 'doctor', 'embassy', 'car_repair'];
 	$scope.maxprice = 1;
+	
 	// combine list of all place sub types
 	$scope.allTypes =  $scope.education.concat( 
 		$scope.indoorFun.concat(
@@ -186,7 +187,7 @@ angular
 			service.nearbySearch({
 				location: $scope.myLocation,
 				radius: $scope.radius,
-				maxprice: $scope.maxprice,
+				maxprice: parseInt($scope.maxprice),
 				type: [subtype],
 			}, searchCallback.bind(type));
 		}		
@@ -226,7 +227,7 @@ angular
 		
 	function searchCallback(results, status, pagination) {
 		var type = this.toString();
-		console.log("trggering searchCallback for place of type: ",type);
+		console.log("trggering searchCallback for place of type: ",type);	
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
 			for (var i = 0; i < results.length; i++) {
 				results[i].type = type;
