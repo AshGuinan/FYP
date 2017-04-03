@@ -136,7 +136,7 @@ module.exports = function(app, passport, raccoon) {
         });
     });
 
-    app.get('/fetchAllPlaces', isLoggedIn, function(req, res) {
+    app.get('/fetchAllPlaces', isAdmin, function(req, res) {
         Place.findAll({ 
             where: { verified:false }
         }).then(function(data){

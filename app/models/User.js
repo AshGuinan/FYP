@@ -20,8 +20,8 @@ var User = sequelize.define('User', {
         defaultValue: false
     },
     budget: {
-        type : Sequelize.STRING, 
-        default: '1'
+        type : Sequelize.INTEGER, 
+        default: 1
     },
     young_child : {
         type : Sequelize.BOOLEAN, 
