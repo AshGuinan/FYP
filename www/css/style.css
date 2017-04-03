@@ -106,3 +106,7 @@ ion-side-menu {
     display: block;
     margin-top: -19px;
 }
+
+#radius {
+	max-width:55px !important;
+}

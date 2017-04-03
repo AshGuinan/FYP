@@ -3,7 +3,7 @@
         Back
     </a>
 
-  <h1 class="title">Settings</h1>
+  <h1 class="title">{{currentUser.userName}} Settings</h1>
 
   <ion-button class="button-clear">
     <i class="ion-arrow-left-c"></i> Back
@@ -14,7 +14,6 @@
     <form>
         <div class="form-group">
 
-            {{currentUser.userName}}
             <input type="hidden" class="form-control" name="userName" value="{{currentUser.userName}}">
         </div>
         <div class="form-group">
@@ -30,24 +29,23 @@
             <label>Budget</label>
 <!--             <input type="text" class="form-control" name="budget" value="{{currentUser.budget}}"> -->
             <select ng-model="currentUser.budget" name="budget">
-                 <option value="0">Free</option>   
-                 <option value="1">Inexpensive</option>   
-                 <option value="2">Moderate</option>   
-                 <option value="3">Expensive</option>   
-                 <option value="4">Very Expensive</option>
+                 <option value=0>Free</option>   
+                 <option value=1>Inexpensive</option>   
+                 <option value=2>Moderate</option>   
+                 <option value=3>Expensive</option>   
+                 <option value=4>Very Expensive</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>Ages of Children</label>
-<!--             <input type="text" class="form-control" name="ageChildren" value="{{currentUser.ageChildren}}"> -->
-            <select ng-model="currentUser.ageChildren" name="ageChildren">
-                 <option value="0">0-3</option>   
-                 <option value="1">4-6</option>   
-                 <option value="2">7-10</option>   
-                 <option value="3">11-13</option>   
-                 <option value="4">14+</option>
-            </select>
+            <label>Age of Children</label>
+            <label>Young Children:
+                <input type="checkbox" ng-model="currentUser.young_child">
+            </label>
+            {{currentUser.young_child}}
+            <label>Older Children [10+]:
+                <input type="checkbox" ng-model="currentUser.older_child">
+            </label>
         </div>
         <div class="form-group">
             <label>Activity Preference</label>
@@ -63,4 +61,17 @@
         <button type="submit" class="button button-positive" ng-click="updateUserDetails()">Update User Profile</button>
         <button type="submit" class="button button-assertive" ng-click="goBack()">cancel</button>
     </form>
+
+    <div ng-if="isAdmin">
+    <table>
+            <tr ng-repeat="place in newPlaces track by $index">
+              <td>{{place.name}},</td>
+              <td>{{place.lat}}, {{place.long}},</td>
+              <td>{{place.type}},</td>
+              <td>{{place.user}},</td>
+              <td>{{place.verified}},</td>
+              <td><button ng-click="verify(place.id)">Verify Me! </button> </td>
+            </tr>
+    </table>
+    </div>
 </ion-content>

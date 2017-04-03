@@ -1,6 +1,6 @@
 <ion-header-bar id="filters" align-title="left" class="bar-positive">
         <div class="row">
-            <div class="col" ng-class="{selected: activeTypes.indexOf('education') > 0}">
+            <div class="col" ng-class="{selected: isActive('education')}">
                 <i class="icon ion-university" ng-click="search('education')"></i>
             </div>   
             <div class="col" ng-class="{selected: isActive('outdoors')}">
@@ -11,7 +11,7 @@
             </div>
             <div class="col" ng-click="search('food')" ng-class="{selected: isActive('food')}">
                 <i>
-                    <i class="icon ion-fork" ></i>
+                <i class="icon ion-fork" ></i>
                     <i class="icon ion-knife" ></i>
                 </i>
            </div>
@@ -26,21 +26,22 @@
             </div>
         </div>
 </ion-header-bar>
-<ion-header-bar align-title="left" class="bar-subheader bar-positive"><span>Search Radius [meters]:</span> <input type="text" name="radius" ng-model="radius"> </ion-header-bar>
+<ion-header-bar align-title="left" class="bar-subheader bar-positive">
+	<span>Search Radius [meters]:</span> 
+	<input type="text" name="radius" ng-model="radius" id="radius"> 
+	<span>Budget:</span>
+	<select ng-model="maxprice" name="maxprice">
+        <option value=0>Free/Undefined</option>   
+        <option value=1>Inexpensive</option>   
+        <option value=2>Moderate</option>   
+        <option value=3>Expensive</option>   
+        <option value=4>Very Expensive</option>
+    </select>
+    <button ng-click="update()">Update</button>
+</ion-header-bar>
 <ion-side-menus>
     <ion-side-menu-content scroll="false">
         <div id="map"></div>
-
-    	<div ng-if="isAdmin">
-    		<div ng-repeat="place in allPlaces track by $index">
-    		  {{place.name}},
-    		  {{place.address}},
-    		  {{place.type}},
-    		  {{place.user}},
-    		  {{place.verified}}
-    		  <button ng-click="verify(place.id)">Verify Me! </button> 
-    		</div>
-    	</div>
     </ion-side-menu-content>
 
 
@@ -72,6 +73,12 @@
                 <p>
                     Price Level: {{place.price_level}}
                 </p>
+                <p>
+                    Suitable for Younger Children: {{place.young_child}}
+                </p>
+                <p>
+                    Suitable for Older Children: {{place.older_child}}
+                </p>
             </div>
         </div>
     </ion-side-menu>
@@ -88,16 +95,22 @@
             <select ng-model="newPlace.type" ng-options="o as o for o in allTypes">
             </select>
     	</div>
-    	<div class="form-group">
-        	<label>Price</label>
-        	<select ng-model="newPlace.price_level">
-             <option value="0">Free</option>   
-             <option value="1">Inexpensive</option>   
-             <option value="2">Moderate</option>   
-             <option value="3">Expensive</option>   
-             <option value="4">Very Expensive</option>   
-            </select>
-    	</div>
+    <span>Price Level:</span>
+        <select ng-model="newPlace.price_level" name="price_level">
+            <option value=0>Free</option>   
+            <option value=1>Inexpensive</option>   
+            <option value=2>Moderate</option>   
+            <option value=3>Expensive</option>   
+            <option value=4>Very Expensive</option>
+        </select>
+        <div class="form-group">
+            <label>Suitable for Young Children:
+                <input type="checkbox" ng-model="newPlace.young_child">
+            </label>
+            <label>Suitable for Older Children [10+]:
+                <input type="checkbox" ng-model="newPlace.older_child">
+            </label>
+        </div>
 		<button type="submit">Add!</button>
     </form>
 </div>

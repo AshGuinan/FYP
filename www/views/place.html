@@ -11,7 +11,7 @@
             </div>
             <div class="col" ng-click="search('food')" ng-class="{selected: isActive('food')}">
                 <i>
-                    <i class="icon ion-fork" ></i>
+                <i class="icon ion-fork" ></i>
                     <i class="icon ion-knife" ></i>
                 </i>
            </div>
@@ -28,7 +28,7 @@
 </ion-header-bar>
 <ion-header-bar align-title="left" class="bar-subheader bar-positive">
 	<span>Search Radius [meters]:</span> 
-	<input type="text" name="radius" ng-model="radius"> 
+	<input type="text" name="radius" ng-model="radius" id="radius"> 
 	<span>Budget:</span>
 	<select ng-model="maxprice" name="maxprice">
         <option value=0>Free/Undefined</option>   
