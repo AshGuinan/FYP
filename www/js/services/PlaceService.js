@@ -32,6 +32,24 @@ angular
 		});
 	};
 
+	Place.searchPlaces = function(callback,type,budget){	
+		console.log('searching places...', type, budget);
+		$http.get(SERVER_ROOT + 'fetchPlaces').then(
+			function (data){
+				var places = data.data;
+				for(i=0;i<places.length;i++){
+					if(places[i].type == type && places[i].price_level <= budget){
+						console.log("showing custom place "+ places[i]);
+						callback(places[i]);
+					} else {
+						console.log('no match!');
+					}
+	            }
+			},function (error){
+				console.log(error);
+		});
+	};
+
 	Place.fetchAllPlaces = function(callback){
 		$http.get(SERVER_ROOT + 'fetchAllPlaces').then(
 			function (data){

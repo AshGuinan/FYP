@@ -11,7 +11,7 @@ angular
 	var Dublin = new google.maps.LatLng(53.3484285,-6.2569559);
 	var Cork = new google.maps.LatLng(51.8983147,-8.4822781);
 	var Limerick = new google.maps.LatLng(52.6676852,-8.6366651);
-	$scope.radius = 500;
+	$scope.radius = 1000;
 	$scope.markers =[];
 	$scope.newUnsavedPlace = null;
 	$scope.playgrounds =[];
@@ -40,7 +40,7 @@ angular
 	$scope.culture = ['art_gallery', 'library'];
 	$scope.goodToKnow = ['bank', 'gas_station', 'taxi_stand', 'train_station', 'post_office', 'pharmacy'];
 	$scope.ICE = ['police', 'hospital', 'doctor', 'embassy', 'car_repair'];
-	$scope.maxprice = 1;
+	$scope.maxprice = "1";
 	
 	// combine list of all place sub types
 	$scope.allTypes =  $scope.education.concat( 
@@ -56,6 +56,7 @@ angular
 	).sort(); 
 
 	function typeFromSubType(subType){
+		console.log("typeFromSubType", subType, superTypes);
 		for(var i = 0; i < superTypes.length; i++){
 			var superType = superTypes[i]
 			if($scope[superType].indexOf(subType) != -1){
@@ -81,8 +82,8 @@ angular
 			return;
 		}
 		navigator.geolocation.getCurrentPosition(function(success){
-			console.log('getCurrentPosition');
-			console.log(success);
+			// console.log('getCurrentPosition');
+			// console.log(success);
 
 			$scope.myLocation = new google.maps.LatLng(
 				success.coords.latitude,
@@ -173,6 +174,17 @@ angular
 		}
 	};
 
+	$scope.update = function(){
+		console.log('updating');
+		for(var q = 0; q<$scope.activeTypes.length; q++){
+			var type = $scope.activeTypes[q]
+			hidePlacesOfType(type);
+			showPlacesOfType(type);
+			console.log('updating', type);
+		}
+		
+	};
+
 	$scope.isActive = function(type){
 		return $scope.activeTypes.indexOf(type) > -1;
 	}
@@ -183,14 +195,17 @@ angular
 		map.setCenter($scope.myLocation);
 		for(var x=0; x<sType.length; x++){
 			subtype = sType[x];
-			console.log($scope.myLocation);
+		    var maxprice = parseInt($scope.maxprice);
+			
+			// console.log('searching places');
+			Place.searchPlaces(createMarkerFromCustomPlace, type, maxprice);
 			service.nearbySearch({
 				location: $scope.myLocation,
 				radius: $scope.radius,
-				maxprice: parseInt($scope.maxprice),
+				maxPriceLevel: maxprice,
 				type: [subtype],
 			}, searchCallback.bind(type));
-		}		
+		}
 	}
 
 	function hidePlacesOfType(type){
@@ -242,7 +257,7 @@ angular
 
 	function createMarker(place) {
 		console.log("place " + place.place_id + " has type " + place.type);
-		var type = (place.types[0]).replace("_"," ");
+		var type = place.type;
 		var iconLabel = '';	
 		switch(place.type){
 			case 'education':
@@ -288,6 +303,8 @@ angular
 		marker.place = place;
 		markers.push(marker);
 		var placeRating;
+		var price;
+
 		if(place.price_level == undefined){
 			place.price_level = " No Information Available";
 		}
@@ -309,7 +326,7 @@ angular
 					'<p> Type: ' +  type + '</p>' +
 					'<p> This Address: ' + place.vicinity + '</p>' +
 					'<p>' + placeRating + '</p>' +
-					'<p> Price Level' + place.price_level + '</p>' + 
+					'<p> Price Level: ' + place.price_level + '</p>' + 
 					'<p> Suitable for young kids: ' + place.young_child + '</p>' + 
 					'<p> Suitable for older kids: ' + place.older_child + '</p>' + 
 					'<a ng-click=upvote("' + place.place_id + '") class="ion-checkmark-round"> I liked it! </a>' +
@@ -403,13 +420,12 @@ angular
 
 
 	createMarkerFromCustomPlace = function(customPlace){
+		console.log("createMarkerFromCustomPlace",customPlace);
 		var location = new google.maps.LatLng(customPlace.lat, customPlace.long);
-		var dist = google.maps.geometry.spherical.computeDistanceBetween(
-			map.getCenter(),
-			location);
+		var dist = google.maps.geometry.spherical.computeDistanceBetween(map.getCenter(),location);
 		if (dist <= $scope.radius){
-			console.log(typeFromSubType(customPlace.type));
 			Place.geocodePosition(customPlace, function(address){	
+				console.log("creating custom place",customPlace);
 				createMarker({
 					custom: true,
 					place_id: customPlace.id,
@@ -437,7 +453,8 @@ angular
 		$scope.currentUser = user;
 		initMap();
 		showUserLocationIfAvailable();
-		Place.fetchPlaces(createMarkerFromCustomPlace);
+		$scope.maxprice = $scope.currentUser.budget;
+		// Place.fetchPlaces(createMarkerFromCustomPlace);
 	})
 
 
